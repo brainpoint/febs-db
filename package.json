@@ -1,0 +1,63 @@
+{
+  "_args": [
+    [
+      "citong-db",
+      ""
+    ]
+  ],
+  "_from": "citong-db@*",
+  "_id": "citong-db@0.2.6",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/citong-db",
+  "_nodeVersion": "5.4.0",
+  "_npmOperationalInternal": {
+    "host": "packages-16-east.internal.npmjs.com",
+    "tmp": "tmp/citong-db-0.2.6.tgz_1460627839475_0.07580562424845994"
+  },
+  "_npmUser": {
+    "email": "bpoint.lee@gmail.com",
+    "name": "brainpoint"
+  },
+  "_npmVersion": "3.3.12",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "citong-db",
+    "raw": "citong-db",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "*",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_shasum": "a756e6fb2ecfec4889b375f12e6dc130063742e8",
+  "_shrinkwrap": null,
+  "_spec": "citong-db",
+  "_where": "",
+  "dependencies": {},
+  "description": "citong db库用于连接数据库,目前仅支持mysql",
+  "devDependencies": {
+    "assert": "1.3.0",
+    "citong": "1.0.0",
+    "mysql": "2.8.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "a756e6fb2ecfec4889b375f12e6dc130063742e8",
+    "tarball": "https://registry.npmjs.org/citong-db/-/citong-db-0.2.6.tgz"
+  },
+  "license": "MIT",
+  "maintainers": [
+    {
+      "name": "brainpoint",
+      "email": "bpoint.lee@gmail.com"
+    }
+  ],
+  "name": "citong-db",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {},
+  "version": "0.2.6"
+}
