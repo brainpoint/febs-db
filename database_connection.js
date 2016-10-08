@@ -7,7 +7,7 @@
  */
 
 var mysql   = require('mysql');
-var exception = require('citong').exception;
+var exception = require('./exception');
 var citong   = require('citong');
 
 module.exports = class {

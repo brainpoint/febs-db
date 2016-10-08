@@ -1,5 +1,6 @@
 citong db库用于连接数据库,目前仅支持mysql
 
+- [exception](#exception)
 - [define-table](#define-table)
 - [connect-db](#connect-db)
 - [exist](#exist)
@@ -12,6 +13,19 @@ citong db库用于连接数据库,目前仅支持mysql
 - [transaction](#transaction)
 - [Class:database_table_base](#class-database_table_base)
 
+## exception
+定义了常用的错误类型.
+异常是如下的对象: {msg, code, filename, line}; 其中code有如下意义
+
+```js
+// @desc: 数据查询条件错误。参数语句问题.
+exception.DB_ERROR_SQL
+// @desc: 数据连接问题.
+exception.DB_ERROR_CONNECT
+// @desc: 数据执行错误.
+exception.DB_ERROR
+```
+事务处理中发生异常将自动rollback.
 
 ## define table.
 ***

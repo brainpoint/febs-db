@@ -10,7 +10,7 @@
 let citong   = require('citong');
 let assert   = require('assert');
 let database_connection = require('./database_connection');
-let exception = require('citong').exception;
+let exception = require('./exception');
 
 // update时的自增.
 class update_inc {
