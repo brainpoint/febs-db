@@ -42,6 +42,7 @@ module.exports = class {
       }
     } catch (e) {
       this._handleErr('[TRANSACTION exception]' , e, __filename, __line);
+      
       if (this.conn && !(e.code == 'ENOTFOUND' || e.code == 'ETIMEDOUT' || e.code == 'PROTOCOL_SEQUENCE_TIMEOUT')) {
         yield this._rollback();
       }
@@ -104,11 +105,11 @@ module.exports = class {
 
     if (e.code == 'ENOTFOUND' || e.code == 'ETIMEDOUT' || e.code == 'PROTOCOL_SEQUENCE_TIMEOUT')
     {
-      throw new exception(sql, exception.DB_ERROR_CONNECT, filename, line);
+      //throw new exception(sql, exception.DB_ERROR_CONNECT, filename, line);
     }
     else
     {
-      throw new exception(sql, exception.DB_ERROR, filename, line);
+      //throw new exception(sql, exception.DB_ERROR, filename, line);
     }
   }
 };
