@@ -25,7 +25,7 @@ module.exports = class {
       var ret = yield citong.utils.denodeify(this.conn.query, this.conn)('START TRANSACTION');
       if (global.isDebug)
       {
-        console.log('START TRANSACTION ' + (ret?"ok":"err"));
+        console.log('[START TRANSACTION] ' + (ret?"ok":"err"));
       }
       if (ret) {
         var r = yield* taskCB();
@@ -41,9 +41,10 @@ module.exports = class {
         }
       }
     } catch (e) {
-      this._handleErr('transaction' , e, __filename, __line);
-      if (this.conn)
-        this.conn.release();
+      this._handleErr('[TRANSACTION exception]' , e, __filename, __line);
+      if (this.conn && !(e.code == 'ENOTFOUND' || e.code == 'ETIMEDOUT' || e.code == 'PROTOCOL_SEQUENCE_TIMEOUT')) {
+        yield this._rollback();
+      }
       return false;
     }
   }
@@ -57,7 +58,7 @@ module.exports = class {
       var r = yield citong.utils.denodeify(this.conn.query, this.conn)('COMMIT');//yield citong.utils.denodeify(this.conn.commit, this.conn)();
       if (global.isDebug)
       {
-        console.log('COMMIT ' + (r?"ok":"err"));
+        console.log('[COMMIT] ' + (r?"ok":"err"));
       }
       this.conn.release();
       this.conn = null;
@@ -78,7 +79,7 @@ module.exports = class {
       var r = yield citong.utils.denodeify(this.conn.query, this.conn)('ROLLBACK');
       if (global.isDebug)
       {
-        console.log('ROLLBACK ' + (r?"ok":"err"));
+        console.log('[ROLLBACK] ' + (r?"ok":"err"));
       }
       this.conn.release();
       this.conn = null;
