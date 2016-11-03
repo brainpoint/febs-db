@@ -39,6 +39,10 @@ module.exports = class {
           yield this._rollback();
           return false;
         }
+      } else {
+        this.conn.release();
+        this.conn = null;
+        return false;
       }
     } catch (e) {
       this._handleErr('[TRANSACTION exception]' , e, __filename, __line);
