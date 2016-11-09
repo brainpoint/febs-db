@@ -40,15 +40,21 @@ module.exports = class {
           return false;
         }
       } else {
-        this.conn.release();
+        this.conn.destroy();
         this.conn = null;
         return false;
       }
     } catch (e) {
       this._handleErr('[TRANSACTION exception]' , e, __filename, __line);
       
-      if (this.conn && !(e.code == 'ENOTFOUND' || e.code == 'ETIMEDOUT' || e.code == 'PROTOCOL_SEQUENCE_TIMEOUT')) {
-        yield this._rollback();
+      if (this.conn) {
+        if (!(e.code == 'ENOTFOUND' || e.code == 'ETIMEDOUT' || e.code == 'PROTOCOL_SEQUENCE_TIMEOUT')) {
+          yield this._rollback();
+        }
+        else {
+          this.conn.destroy();
+          this.conn = null;
+        }
       }
       return false;
     }
@@ -65,7 +71,7 @@ module.exports = class {
       {
         console.log('[COMMIT] ' + (r?"ok":"err"));
       }
-      this.conn.release();
+      this.conn.destroy();
       this.conn = null;
       return r ? true : false;
     } catch (e) {
@@ -86,13 +92,15 @@ module.exports = class {
       {
         console.log('[ROLLBACK] ' + (r?"ok":"err"));
       }
-      this.conn.release();
+      this.conn.destroy();
       this.conn = null;
       //var c = this.conn;
       //this.conn.rollback(function(){ c.release(); });
     } catch (e) {
-      this.conn.release();
-      this.conn = null;
+      if (this.conn) {
+        this.conn.destroy();
+        this.conn = null;
+      }
     }
   }
 

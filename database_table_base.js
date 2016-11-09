@@ -169,7 +169,7 @@ module.exports = class {
   * @return:
   */
   get_conn_db(args) {
-    let conn = this.client;
+    let conn = null;
     if (args.length > 0 && (args[args.length-1] instanceof database_connection) && args[args.length-1].conn)
     {
       conn = args[args.length-1].conn;
@@ -185,10 +185,16 @@ module.exports = class {
   */
   *add( item ) {
     let conn = this.get_conn_db(arguments);
+    let needRelease = false;
 
     assert(item != null && item != undefined);
     let sqlv = this._makeCols1(item);
     let sql = "INSERT INTO `" + this.tablename + "` (" + sqlv[0] + ") VALUES(" + sqlv[1] + ")";
+
+    try {
+      if (!conn)  { conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true; }
+      if (!conn)  return false;
+    } catch (e) { return false; }
 
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
@@ -199,6 +205,8 @@ module.exports = class {
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
       return false;
+    } finally {
+      if (needRelease)  conn.release();
     }
   }
 
@@ -215,17 +223,35 @@ module.exports = class {
 
     var idKeyName = this.idKeyName;
     try {
-      conn.query(sql, function(err, ret) {
-        if (ret) {
-          if (ret.insertId) {
-            item[idKeyName] = ret.insertId;
+
+      if (!conn) {
+        this.client.getConnection(function(err, connection){
+          connection.query(sql, function(err, ret) {
+            connection.release();
+            if (ret) {
+              if (ret.insertId) {
+                item[idKeyName] = ret.insertId;
+              }
+              cb(null, true);
+            }
+            else {
+              cb(err, false);
+            }
+          });
+        });
+      } else {   
+        conn.query(sql, function(err, ret) {
+          if (ret) {
+            if (ret.insertId) {
+              item[idKeyName] = ret.insertId;
+            }
+            cb(null, true);
           }
-          cb(null, true);
-        }
-        else {
-          cb(err, false);
-        }
-      });
+          else {
+            cb(err, false);
+          }
+        });
+      } // if...else.
 
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -239,9 +265,15 @@ module.exports = class {
   */
   *remove( where ) {
     let conn = this.get_conn_db(arguments);
-
+    let needRelease = false;
+    
     assert(where != null && where != undefined && where.length > 0);
     let sql = "DELETE FROM `" + this.tablename + "` WHERE " + (where);
+
+    try {
+      if (!conn)  { conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true; }
+      if (!conn)  return false;
+    } catch (e) { return false; }
 
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
@@ -249,6 +281,8 @@ module.exports = class {
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
       return false;
+    } finally {
+      if (needRelease)  conn.release();
     }
   }
 
@@ -264,15 +298,29 @@ module.exports = class {
     let sql = "DELETE FROM `" + this.tablename + "` WHERE " + (where);
 
     try {
-
-      conn.query(sql, function(err, ret) {
-        if (ret) {
-          cb(null, true);
-        }
-        else {
-          cb(err, false);
-        }
-      });
+      if (!conn) {
+        this.client.getConnection(function(err, connection){
+          connection.query(sql, function(err, ret) {
+            connection.release();
+            if (ret) {
+              cb(null, true);
+            }
+            else {
+              cb(err, false);
+            }
+          });
+        });
+      } else {   
+        conn.query(sql, function(err, ret) {
+          if (ret) {
+            cb(null, true);
+          }
+          else {
+            cb(err, false);
+          }
+        });
+      } // if...else.
+      
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
     }
@@ -288,6 +336,7 @@ module.exports = class {
     assert(item != null && item != undefined);
 
     let conn = this.get_conn_db(arguments);
+    let needRelease = false;
 
     let sqlv = this._makeCols2(item);
     let sql = "UPDATE `" + this.tablename + "` SET " + sqlv + " WHERE ";
@@ -316,11 +365,18 @@ module.exports = class {
     }
 
     try {
+      if (!conn)  { conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true; }
+      if (!conn)  return false;
+    } catch (e) { return false; }
+
+    try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
       return ret ? true : false;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
       return false;
+    } finally {
+      if (needRelease)  conn.release();
     }
   }
 
@@ -368,14 +424,30 @@ module.exports = class {
     assert(typeof cb === 'function');
 
     try {
-      conn.query(sql, function(err, ret){
-        if (ret) {
-          cb(null, true);
-        }
-        else {
-          cb(err, false);
-        }
-      });
+      if (!conn) {
+        this.client.getConnection(function(err, connection){
+          connection.query(sql, function(err, ret){
+            connection.release();
+            if (ret) {
+              cb(null, true);
+            }
+            else {
+              cb(err, false);
+            }
+          });
+        });
+      } else {   
+        conn.query(sql, function(err, ret){
+          if (ret) {
+            cb(null, true);
+          }
+          else {
+            cb(err, false);
+          }
+        });
+      } // if...else.
+
+      
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
     }
@@ -394,6 +466,7 @@ module.exports = class {
       throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
 
     let conn = this.get_conn_db(arguments);
+    let needRelease = false;
 
     let query_cols;
     if (arguments[1] && (arguments[1] instanceof Array))
@@ -401,6 +474,11 @@ module.exports = class {
     let query_str = this._makeCols3(query_cols);
 
     let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id;
+
+    try {
+      if (!conn)  { conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true; }
+      if (!conn)  return null;
+    } catch (e) { return null; }
 
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
@@ -416,6 +494,8 @@ module.exports = class {
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
       return null;
+    } finally {
+      if (needRelease)  conn.release();
     }
   }
 
@@ -452,21 +532,44 @@ module.exports = class {
 
     var ctx = this;
     try {
-      conn.query(sql, function(err, ret){
-        // fix boolean col.
-        if (ret && ret[0])
-        {
-          for (let j = 0; j < ctx._boolCols.length; j++) {
-            let k = ctx._boolCols[j];
-            ret[0][k] = (ret[0][k] ? 1==ret[0][k].readUInt8(0) : null);
-          }
-        }
+      if (!conn) {
+        this.client.getConnection(function(err, connection){
+          connection.query(sql, function(err, ret){
+            connection.release();
+            // fix boolean col.
+            if (ret && ret[0])
+            {
+              for (let j = 0; j < ctx._boolCols.length; j++) {
+                let k = ctx._boolCols[j];
+                ret[0][k] = (ret[0][k] ? 1==ret[0][k].readUInt8(0) : null);
+              }
+            }
 
-        if (err)
-          cb(err, null);
-        else
-          cb(null, (ret ? ret[0] : null));
-      });
+            if (err)
+              cb(err, null);
+            else
+              cb(null, (ret ? ret[0] : null));
+          });
+        });
+      } else {   
+        conn.query(sql, function(err, ret){
+          // fix boolean col.
+          if (ret && ret[0])
+          {
+            for (let j = 0; j < ctx._boolCols.length; j++) {
+              let k = ctx._boolCols[j];
+              ret[0][k] = (ret[0][k] ? 1==ret[0][k].readUInt8(0) : null);
+            }
+          }
+
+          if (err)
+            cb(err, null);
+          else
+            cb(null, (ret ? ret[0] : null));
+        });
+      } // if...else.
+
+      
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
     }
@@ -486,6 +589,7 @@ module.exports = class {
       throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
 
     let conn = this.get_conn_db(arguments);
+    assert(conn);
 
     let query_cols;
     if (arguments[1] && (arguments[1] instanceof Array))
@@ -525,6 +629,7 @@ module.exports = class {
       throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
 
     let conn = this.get_conn_db(arguments);
+    assert(conn);
 
     let query_cols;
     var cb;
@@ -544,7 +649,7 @@ module.exports = class {
     let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id + " FOR UPDATE";
 
     var ctx = this;
-    try {
+    try {      
       conn.query(sql, function(err, ret){
         if (err)  cb(err, null);
         else
@@ -712,11 +817,19 @@ module.exports = class {
   */
   *queryWhere( where ) {
     var arg_len = arguments.length;
+    let needRelease = false;
     let conn = this.client;
     if (arguments.length > 0 && (arguments[arguments.length-1] instanceof database_connection) && arguments[arguments.length-1].conn)
     {
       conn = arguments[arguments.length-1].conn;
       arg_len--;
+    }
+    else
+    {
+      try {
+        conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true;
+        if (!conn)  return null;
+      } catch (e) { return null; }
     }
 
     let index;
@@ -809,6 +922,8 @@ module.exports = class {
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
       return null;
+    } finally {
+      if (needRelease)  conn.release();
     }
   }
 
@@ -920,27 +1035,56 @@ module.exports = class {
 
     try {
       var ctx = this;
-      conn.query(sql, function(err, ret){
-        if (err)  cb(err, null);
-        else
-        {
-          // fix boolean col.
-          if (ret && ret.length > 0)
-          {
-            for (let j = 0; j < ctx._boolCols.length; j++) {
-              let k = ctx._boolCols[j];
-              if (ret[0][k] == undefined)
-                continue;
 
-              for (let i = 0; i < ret.length; i++) {
-                ret[i][k] = (ret[i][k] ? 1==ret[i][k].readUInt8(0) : null);
+      if (!conn) {
+        this.client.getConnection(function(err, connection){
+          connection.query(sql, function(err, ret){
+            connection.release();
+            if (err)  cb(err, null);
+            else
+            {
+              // fix boolean col.
+              if (ret && ret.length > 0)
+              {
+                for (let j = 0; j < ctx._boolCols.length; j++) {
+                  let k = ctx._boolCols[j];
+                  if (ret[0][k] == undefined)
+                    continue;
+
+                  for (let i = 0; i < ret.length; i++) {
+                    ret[i][k] = (ret[i][k] ? 1==ret[i][k].readUInt8(0) : null);
+                  }
+                }
+              }
+
+              cb(null, ret);
+            }
+          });
+        });
+      } else {   
+        conn.query(sql, function(err, ret){
+          if (err)  cb(err, null);
+          else
+          {
+            // fix boolean col.
+            if (ret && ret.length > 0)
+            {
+              for (let j = 0; j < ctx._boolCols.length; j++) {
+                let k = ctx._boolCols[j];
+                if (ret[0][k] == undefined)
+                  continue;
+
+                for (let i = 0; i < ret.length; i++) {
+                  ret[i][k] = (ret[i][k] ? 1==ret[i][k].readUInt8(0) : null);
+                }
               }
             }
-          }
 
-          cb(null, ret);
-        }
-      });
+            cb(null, ret);
+          }
+        });
+      } // if...else.
+
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
     }
@@ -954,6 +1098,7 @@ module.exports = class {
   */
   *count() {
     let conn = this.get_conn_db(arguments);
+    let needRelease = false;
 
     let where = arguments[0];
     let sql = "SELECT COUNT(*) FROM `" + this.tablename + "`";
@@ -961,11 +1106,18 @@ module.exports = class {
       sql += " WHERE " + (where);
 
     try {
+      if (!conn)  { conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true; }
+      if (!conn)  return -1;
+    } catch (e) { return -1; }
+
+    try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
       return (ret && ret.length >= 1) ? ret[0]['COUNT(*)'] : -1;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
       return -1;
+    } finally {
+      if (needRelease)  conn.release();
     }
   }
 
@@ -995,13 +1147,27 @@ module.exports = class {
       sql += " WHERE " + (where);
 
     try {
-      conn.query(sql, function(err, ret){
-        if (err)  cb(err, null);
-        else
-        {
-          cb(null, ((ret && ret.length >= 1) ? ret[0]['COUNT(*)'] : -1));
-        }
-      });
+      if (!conn) {
+        this.client.getConnection(function(err, connection){
+          connection.query(sql, function(err, ret){
+            connection.release();
+            if (err)  cb(err, null);
+            else
+            {
+              cb(null, ((ret && ret.length >= 1) ? ret[0]['COUNT(*)'] : -1));
+            }
+          });
+        });
+      } else {   
+        conn.query(sql, function(err, ret){
+          if (err)  cb(err, null);
+          else
+          {
+            cb(null, ((ret && ret.length >= 1) ? ret[0]['COUNT(*)'] : -1));
+          }
+        });
+      } // if...else.
+
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
     }
@@ -1014,6 +1180,7 @@ module.exports = class {
   */
   *isExistWhere( where ) {
     let conn = this.get_conn_db(arguments);
+    let needRelease = false;
 
     let sql = "SELECT COUNT(*) FROM `" + this.tablename + "`";
     if (where != null && where != undefined)
@@ -1021,11 +1188,18 @@ module.exports = class {
     sql += " LIMIT 0,1";
 
     try {
+      if (!conn)  { conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true; }
+      if (!conn)  return false;
+    } catch (e) { return false; }
+
+    try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
       return (ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
       return false;
+    } finally {
+      if (needRelease)  conn.release();
     }
   }
 
@@ -1056,13 +1230,28 @@ module.exports = class {
     sql += " LIMIT 0,1";
 
     try {
-      conn.query(sql, function(err, ret){
-        if (err)  cb(err, null);
-        else
-        {
-          cb(null, ((ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false));
-        }
-      });
+      if (!conn) {
+        this.client.getConnection(function(err, connection){
+          connection.query(sql, function(err, ret){
+            connection.release();
+            if (err)  cb(err, null);
+            else
+            {
+              cb(null, ((ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false));
+            }
+          });
+        });
+      } else {   
+        conn.query(sql, function(err, ret){
+          if (err)  cb(err, null);
+          else
+          {
+            cb(null, ((ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false));
+          }
+        });
+      } // if...else.
+
+      
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
     }
@@ -1078,14 +1267,23 @@ module.exports = class {
       throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
 
     let conn = this.get_conn_db(arguments);
+    let needRelease = false;
 
     let sql = "SELECT COUNT(*) FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id + " LIMIT 0,1";
+
+    try {
+      if (!conn)  { conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true; }
+      if (!conn)  return false;
+    } catch (e) { return false; }
+
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
       return (ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
       return false;
+    } finally {
+      if (needRelease)  conn.release();
     }
   }
 
@@ -1103,13 +1301,28 @@ module.exports = class {
 
     let sql = "SELECT COUNT(*) FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id + " LIMIT 0,1";
     try {
-      conn.query(sql, function(err, ret){
-        if (err)  cb(err, null);
-        else
-        {
-          cb(null, ((ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false));
-        }
-      });
+      if (!conn) {
+        this.client.getConnection(function(err, connection){
+          connection.query(sql, function(err, ret){
+            connection.release();
+            if (err)  cb(err, null);
+            else
+            {
+              cb(null, ((ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false));
+            }
+          });
+        });
+      } else {   
+        conn.query(sql, function(err, ret){
+          if (err)  cb(err, null);
+          else
+          {
+            cb(null, ((ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false));
+          }
+        });
+      } // if...else.
+
+      
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
     }
