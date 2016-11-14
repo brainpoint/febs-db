@@ -11,8 +11,9 @@ var exception = require('./exception');
 var citong   = require('citong');
 
 module.exports = class {
-  constructor(conn) {
+  constructor(conn, db) {
     this.conn = conn;
+    this.db = db;
   }
 
   /**
@@ -40,8 +41,8 @@ module.exports = class {
           return false;
         }
       } else {
+        this.db._removeFromPingPool(this.conn);
         this.conn.destroy();
-        this.conn = null;
         return false;
       }
     } catch (e) {
@@ -52,11 +53,14 @@ module.exports = class {
           yield this._rollback();
         }
         else {
+          this.db._removeFromPingPool(this.conn);
           this.conn.destroy();
-          this.conn = null;
         }
       }
       return false;
+    } finally {
+      this.conn = null;
+      this.db = null;
     }
   }
 
@@ -71,14 +75,17 @@ module.exports = class {
       {
         console.log('[COMMIT] ' + (r?"ok":"err"));
       }
+      this.db._removeFromPingPool(this.conn);
       this.conn.destroy();
-      this.conn = null;
       return r ? true : false;
     } catch (e) {
       var c = this.conn;
       yield this._rollback();
       //this.conn.rollback(function(){ c.release(); this._handleErr('_commit' , e, __filename, __line);});
       return false;
+    } finally {
+      this.conn = null;
+      this.db = null;
     }
   }
 
@@ -92,15 +99,18 @@ module.exports = class {
       {
         console.log('[ROLLBACK] ' + (r?"ok":"err"));
       }
+      this.db._removeFromPingPool(this.conn);
       this.conn.destroy();
-      this.conn = null;
       //var c = this.conn;
       //this.conn.rollback(function(){ c.release(); });
     } catch (e) {
       if (this.conn) {
+        this.db._removeFromPingPool(this.conn);
         this.conn.destroy();
-        this.conn = null;
       }
+    } finally {
+      this.conn = null;
+      this.db = null;
     }
   }
 

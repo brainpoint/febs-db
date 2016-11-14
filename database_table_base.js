@@ -201,6 +201,9 @@ module.exports = class {
       if (ret && ret.insertId) {
         item[this.idKeyName] = ret.insertId;
       }
+      
+      this.client._addToPingPool(conn);
+
       return ret ? true : false;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -223,10 +226,11 @@ module.exports = class {
 
     var idKeyName = this.idKeyName;
     try {
-
+      let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
           connection.query(sql, function(err, ret) {
+            ctx.client._addToPingPool(connection);
             connection.release();
             if (ret) {
               if (ret.insertId) {
@@ -241,6 +245,7 @@ module.exports = class {
         });
       } else {   
         conn.query(sql, function(err, ret) {
+          ctx.client._addToPingPool(conn);
           if (ret) {
             if (ret.insertId) {
               item[idKeyName] = ret.insertId;
@@ -277,6 +282,7 @@ module.exports = class {
 
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
+      this.client._addToPingPool(conn);
       return ret ? true : false;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -298,9 +304,11 @@ module.exports = class {
     let sql = "DELETE FROM `" + this.tablename + "` WHERE " + (where);
 
     try {
+      let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
           connection.query(sql, function(err, ret) {
+            ctx.client._addToPingPool(conn);
             connection.release();
             if (ret) {
               cb(null, true);
@@ -312,6 +320,7 @@ module.exports = class {
         });
       } else {   
         conn.query(sql, function(err, ret) {
+          ctx.client._addToPingPool(conn);
           if (ret) {
             cb(null, true);
           }
@@ -371,6 +380,7 @@ module.exports = class {
 
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
+      this.client._addToPingPool(conn);
       return ret ? true : false;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -424,9 +434,11 @@ module.exports = class {
     assert(typeof cb === 'function');
 
     try {
+      let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
           connection.query(sql, function(err, ret){
+            ctx.client._addToPingPool(connection);
             connection.release();
             if (ret) {
               cb(null, true);
@@ -438,6 +450,7 @@ module.exports = class {
         });
       } else {   
         conn.query(sql, function(err, ret){
+          ctx.client._addToPingPool(conn);
           if (ret) {
             cb(null, true);
           }
@@ -490,6 +503,7 @@ module.exports = class {
           ret[0][k] = (ret[0][k] ? 1==ret[0][k].readUInt8(0) : null);
         }
       }
+      this.client._addToPingPool(conn);
       return ret ? ret[0] : null;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -535,6 +549,7 @@ module.exports = class {
       if (!conn) {
         this.client.getConnection(function(err, connection){
           connection.query(sql, function(err, ret){
+            ctx.client._addToPingPool(connection);
             connection.release();
             // fix boolean col.
             if (ret && ret[0])
@@ -553,6 +568,7 @@ module.exports = class {
         });
       } else {   
         conn.query(sql, function(err, ret){
+          ctx.client._addToPingPool(conn);
           // fix boolean col.
           if (ret && ret[0])
           {
@@ -608,6 +624,7 @@ module.exports = class {
           ret[0][k] = (ret[0][k] ? 1==ret[0][k].readUInt8(0) : null);
         }
       }
+      this.client._addToPingPool(conn);
       return ret ? ret[0] : null;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -651,6 +668,7 @@ module.exports = class {
     var ctx = this;
     try {      
       conn.query(sql, function(err, ret){
+        ctx.client._addToPingPool(conn);
         if (err)  cb(err, null);
         else
         {
@@ -918,6 +936,8 @@ module.exports = class {
           }
         }
       }
+
+      this.client._addToPingPool(conn);
       return ret;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -1039,6 +1059,7 @@ module.exports = class {
       if (!conn) {
         this.client.getConnection(function(err, connection){
           connection.query(sql, function(err, ret){
+            ctx.client._addToPingPool(connection);
             connection.release();
             if (err)  cb(err, null);
             else
@@ -1063,6 +1084,7 @@ module.exports = class {
         });
       } else {   
         conn.query(sql, function(err, ret){
+          ctx.client._addToPingPool(conn);
           if (err)  cb(err, null);
           else
           {
@@ -1112,6 +1134,7 @@ module.exports = class {
 
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
+      this.client._addToPingPool(conn);
       return (ret && ret.length >= 1) ? ret[0]['COUNT(*)'] : -1;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -1147,9 +1170,11 @@ module.exports = class {
       sql += " WHERE " + (where);
 
     try {
+      let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
           connection.query(sql, function(err, ret){
+            ctx.client._addToPingPool(connection);
             connection.release();
             if (err)  cb(err, null);
             else
@@ -1160,6 +1185,7 @@ module.exports = class {
         });
       } else {   
         conn.query(sql, function(err, ret){
+          ctx.client._addToPingPool(conn);
           if (err)  cb(err, null);
           else
           {
@@ -1194,6 +1220,7 @@ module.exports = class {
 
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
+      this.client._addToPingPool(conn);
       return (ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -1230,9 +1257,11 @@ module.exports = class {
     sql += " LIMIT 0,1";
 
     try {
+      let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
           connection.query(sql, function(err, ret){
+            ctx.client._addToPingPool(connection);
             connection.release();
             if (err)  cb(err, null);
             else
@@ -1243,6 +1272,7 @@ module.exports = class {
         });
       } else {   
         conn.query(sql, function(err, ret){
+          ctx.client._addToPingPool(conn);
           if (err)  cb(err, null);
           else
           {
@@ -1278,6 +1308,7 @@ module.exports = class {
 
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)(sql);
+      this.client._addToPingPool(conn);
       return (ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false;
     } catch (e) {
       this._handleErr(sql, e, __filename, __line);
@@ -1301,9 +1332,11 @@ module.exports = class {
 
     let sql = "SELECT COUNT(*) FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id + " LIMIT 0,1";
     try {
+      let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
           connection.query(sql, function(err, ret){
+            ctx.client._addToPingPool(connection);
             connection.release();
             if (err)  cb(err, null);
             else
@@ -1314,6 +1347,7 @@ module.exports = class {
         });
       } else {   
         conn.query(sql, function(err, ret){
+          ctx.client._addToPingPool(conn);
           if (err)  cb(err, null);
           else
           {

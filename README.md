@@ -54,10 +54,11 @@ class TableDemo extends citong_table {
 
 ## connect db.
 ***
+see [mysql](https://www.npmjs.com/package/mysql#connection-options) connection-options.
 ```js
 var database = require('citong-db').database;
 
-var opt = { // see mysql.
+var opt = {
   connectionLimit   : 10,
   supportBigNumbers : true,
   bigNumberStrings  : false,
@@ -65,7 +66,10 @@ var opt = { // see mysql.
   port              : 3306,
   user              : '',
   password          : '',
-  database          : ''
+  database          : '',
+
+  /* ext */
+  queryTimeout      : 5000,
 };
 var db = new database(opt);
 var table = new TableDemo(db.client);
