@@ -19,6 +19,8 @@ module.exports = class {
     // create.
     this.pool = mysql.createPool(opt);
 
+    this.queryTimeout = opt.queryTimeout || 5000;
+
     // ping pool.
     this._pingConnections = [];
 

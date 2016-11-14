@@ -35,7 +35,7 @@ var citong_table   = require('.').table;
 class TableDemo extends citong_table {
   constructor(dbclient) {
     super(
-      dbclient, // database.client
+      dbclient, // database
       'Admin',  // table name.
       'ID',     // primary key.
       {         // cols.
@@ -50,7 +50,15 @@ class TableDemo extends citong_table {
   }
 }
 ```
+example:
+```js
+var database  = require('citong-db').database;
 
+var db = new database({});
+var tableDemo = new TableDemo(db);
+```
+
+It will auto ping all the connection.
 
 ## connect db.
 ***
@@ -72,8 +80,9 @@ var opt = {
   queryTimeout      : 5000,
 };
 var db = new database(opt);
-var table = new TableDemo(db.client);
+var table = new TableDemo(db);
 ```
+
 
 ## exist.
 ***
