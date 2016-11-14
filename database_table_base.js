@@ -198,7 +198,7 @@ module.exports = class {
     } catch (e) { return false; }
 
     try {
-      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.client.queryTimeout});
+      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.clientDB.queryTimeout});
       if (ret && ret.insertId) {
         item[this.idKeyName] = ret.insertId;
       }
@@ -230,7 +230,7 @@ module.exports = class {
       let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
-          connection.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret) {
+          connection.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret) {
             ctx.clientDB._addToPingPool(connection);
             connection.release();
             if (ret) {
@@ -245,7 +245,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret) {
+        conn.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret) {
           ctx.clientDB._addToPingPool(conn);
           if (ret) {
             if (ret.insertId) {
@@ -282,7 +282,7 @@ module.exports = class {
     } catch (e) { return false; }
 
     try {
-      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.client.queryTimeout});
+      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.clientDB.queryTimeout});
       this.clientDB._addToPingPool(conn);
       return ret ? true : false;
     } catch (e) {
@@ -308,7 +308,7 @@ module.exports = class {
       let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
-          connection.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret) {
+          connection.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret) {
             ctx.clientDB._addToPingPool(conn);
             connection.release();
             if (ret) {
@@ -320,7 +320,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret) {
+        conn.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret) {
           ctx.clientDB._addToPingPool(conn);
           if (ret) {
             cb(null, true);
@@ -380,7 +380,7 @@ module.exports = class {
     } catch (e) { return false; }
 
     try {
-      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.client.queryTimeout});
+      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.clientDB.queryTimeout});
       this.clientDB._addToPingPool(conn);
       return ret ? true : false;
     } catch (e) {
@@ -438,7 +438,7 @@ module.exports = class {
       let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
-          connection.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
             ctx.clientDB._addToPingPool(connection);
             connection.release();
             if (ret) {
@@ -450,7 +450,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
           ctx.clientDB._addToPingPool(conn);
           if (ret) {
             cb(null, true);
@@ -495,7 +495,7 @@ module.exports = class {
     } catch (e) { return null; }
 
     try {
-      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.client.queryTimeout});
+      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.clientDB.queryTimeout});
       // fix boolean col.
       if (ret && ret[0])
       {
@@ -549,7 +549,7 @@ module.exports = class {
     try {
       if (!conn) {
         this.client.getConnection(function(err, connection){
-          connection.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
             ctx.clientDB._addToPingPool(connection);
             connection.release();
             // fix boolean col.
@@ -568,7 +568,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
           ctx.clientDB._addToPingPool(conn);
           // fix boolean col.
           if (ret && ret[0])
@@ -616,7 +616,7 @@ module.exports = class {
     let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id + " FOR UPDATE";
 
     try {
-      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.client.queryTimeout});
+      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.clientDB.queryTimeout});
       // fix boolean col.
       if (ret && ret[0])
       {
@@ -668,7 +668,7 @@ module.exports = class {
 
     var ctx = this;
     try {      
-      conn.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+      conn.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
         ctx.clientDB._addToPingPool(conn);
         if (err)  cb(err, null);
         else
@@ -923,7 +923,7 @@ module.exports = class {
     sql += " LIMIT " + offset + "," + limit;
 
     try {
-      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.client.queryTimeout});
+      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.clientDB.queryTimeout});
       // fix boolean col.
       if (ret && ret.length > 0)
       {
@@ -1059,7 +1059,7 @@ module.exports = class {
 
       if (!conn) {
         this.client.getConnection(function(err, connection){
-          connection.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
             ctx.clientDB._addToPingPool(connection);
             connection.release();
             if (err)  cb(err, null);
@@ -1084,7 +1084,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
           ctx.clientDB._addToPingPool(conn);
           if (err)  cb(err, null);
           else
@@ -1134,7 +1134,7 @@ module.exports = class {
     } catch (e) { return -1; }
 
     try {
-      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.client.queryTimeout});
+      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.clientDB.queryTimeout});
       this.clientDB._addToPingPool(conn);
       return (ret && ret.length >= 1) ? ret[0]['COUNT(*)'] : -1;
     } catch (e) {
@@ -1174,7 +1174,7 @@ module.exports = class {
       let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
-          connection.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
             ctx.clientDB._addToPingPool(connection);
             connection.release();
             if (err)  cb(err, null);
@@ -1185,7 +1185,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
           ctx.clientDB._addToPingPool(conn);
           if (err)  cb(err, null);
           else
@@ -1220,7 +1220,7 @@ module.exports = class {
     } catch (e) { return false; }
 
     try {
-      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.client.queryTimeout});
+      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.clientDB.queryTimeout});
       this.clientDB._addToPingPool(conn);
       return (ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false;
     } catch (e) {
@@ -1261,7 +1261,7 @@ module.exports = class {
       let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
-          connection.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
             ctx.clientDB._addToPingPool(connection);
             connection.release();
             if (err)  cb(err, null);
@@ -1272,7 +1272,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
           ctx.clientDB._addToPingPool(conn);
           if (err)  cb(err, null);
           else
@@ -1308,7 +1308,7 @@ module.exports = class {
     } catch (e) { return false; }
 
     try {
-      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.client.queryTimeout});
+      var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.clientDB.queryTimeout});
       this.clientDB._addToPingPool(conn);
       return (ret && ret.length >= 1) ? ret[0]['COUNT(*)'] >= 1 : false;
     } catch (e) {
@@ -1336,7 +1336,7 @@ module.exports = class {
       let ctx = this;
       if (!conn) {
         this.client.getConnection(function(err, connection){
-          connection.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
             ctx.clientDB._addToPingPool(connection);
             connection.release();
             if (err)  cb(err, null);
@@ -1347,7 +1347,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.client.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:this.clientDB.queryTimeout}, function(err, ret){
           ctx.clientDB._addToPingPool(conn);
           if (err)  cb(err, null);
           else
