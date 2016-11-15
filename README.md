@@ -62,7 +62,7 @@ It will auto ping all the connection.
 
 ## connect db.
 ***
-see [mysql](https://www.npmjs.com/package/mysql#connection-options) connection-options.
+see [mysql](https://www.npmjs.com/package/mysql#pool-options) pool-options.
 ```js
 var database = require('citong-db').database;
 

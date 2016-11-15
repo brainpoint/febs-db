@@ -41,7 +41,6 @@ module.exports = class {
           return false;
         }
       } else {
-        this.db._removeFromPingPool(this.conn);
         this.conn.destroy();
         return false;
       }
@@ -53,7 +52,6 @@ module.exports = class {
           yield this._rollback();
         }
         else {
-          this.db._removeFromPingPool(this.conn);
           this.conn.destroy();
         }
       }
@@ -75,7 +73,6 @@ module.exports = class {
       {
         console.log('[COMMIT] ' + (r?"ok":"err"));
       }
-      this.db._removeFromPingPool(this.conn);
       this.conn.destroy();
       return r ? true : false;
     } catch (e) {
@@ -99,13 +96,11 @@ module.exports = class {
       {
         console.log('[ROLLBACK] ' + (r?"ok":"err"));
       }
-      this.db._removeFromPingPool(this.conn);
       this.conn.destroy();
       //var c = this.conn;
       //this.conn.rollback(function(){ c.release(); });
     } catch (e) {
       if (this.conn) {
-        this.db._removeFromPingPool(this.conn);
         this.conn.destroy();
       }
     } finally {
