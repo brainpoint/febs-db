@@ -754,6 +754,7 @@ module.exports = class {
     if (typeof arguments[0] !== 'string')
     {
       where = null;
+      // {orderby}.
       if ((typeof arguments[0] === 'object') && !(arguments[0] instanceof Array))
       {
         query_order = arguments[0];
@@ -766,6 +767,7 @@ module.exports = class {
           cb = arguments[1];
         }
       }
+      // [query_cols].
       else if (arguments[0] instanceof Array)
       {
         query_cols = arguments[0];
@@ -849,31 +851,47 @@ module.exports = class {
     index = 0;
     if (++index < arg_len)
     {
+      // [offset,limit] / [query_cols].
       if (arguments[index] instanceof Array)
       {
+        // [offset,limit].
         if (arguments[index].length == 2 && !isNaN(arguments[index][0]) && !isNaN(arguments[index][1]))
         {
           offset = arguments[index][0];
           limit = arguments[index][1];
 
-          if (++index < arg_len && (typeof arguments[index] === 'object') && !(arguments[index] instanceof Array))
+          if (++index < arg_len)
           {
+            // {orderby}.
+            if ((typeof arguments[index] === 'object') && !(arguments[index] instanceof Array))
+            {
               order = arguments[index];
+              // [query_cols].
               if (++index < arg_len && (arguments[index] instanceof Array))
               {
                 query_cols = arguments[index];
                 query_cols = this._makeCols3(query_cols);
               }
+            }
+            // [query_cols].
+            else if (arguments[index] instanceof Array)
+            {
+              query_cols = arguments[index];
+              query_cols = this._makeCols3(query_cols);
+            }
           }
         }
+        // [query_cols].
         else {
           query_cols = arguments[index];
           query_cols = this._makeCols3(query_cols);
         }
       }
+      // {orderby}.
       else if (typeof arguments[index] === 'object')
       {
         order = arguments[index];
+        // [query_cols].
         if (++index < arg_len && (arguments[index] instanceof Array))
         {
           query_cols = arguments[index];
@@ -963,16 +981,22 @@ module.exports = class {
     index = 0;
     if (++index < arg_len)
     {
+      // [offset,limit] / [query_cols].
       if (arguments[index] instanceof Array)
       {
+        // [offset,limit].
         if (arguments[index].length == 2 && !isNaN(arguments[index][0]) && !isNaN(arguments[index][1]))
         {
           offset = arguments[index][0];
           limit = arguments[index][1];
 
-          if (++index < arg_len && (typeof arguments[index] === 'object') && !(arguments[index] instanceof Array))
+          if (++index + 1 < arg_len)
           {
+            // {orderby}.
+            if ((typeof arguments[index] === 'object') && !(arguments[index] instanceof Array))
+            {
               order = arguments[index];
+              // [query_cols].
               if (++index < arg_len && (arguments[index] instanceof Array))
               {
                 query_cols = arguments[index];
@@ -982,6 +1006,17 @@ module.exports = class {
               else {
                 cb = arguments[index];
               }
+            }
+            // [query_cols].
+            else if (arguments[index] instanceof Array)
+            {
+              query_cols = arguments[index];
+              query_cols = this._makeCols3(query_cols);
+              cb = arguments[index+1];
+            }
+            else {
+              cb = arguments[index];
+            }
           }
           else {
             cb = arguments[index];

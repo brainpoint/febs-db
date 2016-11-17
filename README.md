@@ -40,8 +40,8 @@ class TableDemo extends citong_table {
       'ID',     // primary key.
       {         // cols.
         ID:       {type: 'integer', size: 8, key: true}, // the auto-incrementing primary key
-        Name:     {type: 'text',   size:10},
-        NumberCol:{type: 'number', size: 4},
+        Name:     {type: 'text',    size:10},
+        NumberCol:{type: 'number',  size: 4},
         IntCol:   {type: 'integer', size: 4},
         IntCol:   {type: 'integer', size: 8}, // big int.
         BoolCol:  {type: 'boolean'}
@@ -100,22 +100,20 @@ function* isExist() {
 function* query() {
   let r;
   r = yield table.queryById(1);
-  // or
-  r = yield table.queryById(1, ['ID','Name']);
+  r = yield table.queryById(1, ['ID','Name']);      // only query 'ID','Name' cols.
 
   r = yield table.queryTop("id = 43");
-  // or
-  r = yield table.queryTop("id = 43", ['ID','Name']);
+  r = yield table.queryTop("id = 43", ['ID','Name']);  // only query 'ID','Name' cols.
 
   let where = table.make_condition('id', 43); // == " `id`=43 ".
   where = table.make_condition_like('name', '%dfdfd%'); // == " `name` LIKE '%dfdfd%' ".
-
   r = yield table.queryTop(where);
-  r = yield table.queryWhere(where, [0, 100], {id:true}); // where id = 43 limit 0,100 order by id asc.
 
-  r = yield table.queryTop(where, ['ID', 'Name']);  // only query 'ID','Name' cols.
-
-  r = yield table.queryTop(where, ['COUNT(ID) as x']);
+  r = yield table.queryWhere(where, [0, 100], {ID:true});       // where id = 43 limit 0,100 order by id asc.
+  r = yield table.queryWhere(where, ['ID', 'Name']);            // only query 'ID','Name' cols.
+  r = yield table.queryWhere(where, [0, 100],  ['ID', 'Name']); // only query 'ID','Name' cols. limit 0,100
+  r = yield table.queryWhere(where, {ID:true}, ['ID', 'Name']); // only query 'ID','Name' cols. orderby ID
+  r = yield table.queryWhere(where, ['COUNT(ID) as x']);
 }
 ```
 
@@ -411,18 +409,18 @@ queryTopSync( where )
 * @desc: query
 *         the last param can be conn.
 * @param: where, [offset,limit], {orderby}, [query_cols]
-*           orderby: {key:true/false} true-means asc, false-means desc.
-*           query_cols: [col1,col2], the cols will be query.
-* @return: mod[].
+*           - orderby: {key:true/false} true means asc, false means desc.
+*           - query_cols: [col1,col2], the cols will be query. e.g. ['id', 'name']
+* @return: [mod,mod,...].
 */
 *queryWhere( where )
 /**
 * @desc: query
 *         the last param can be conn.
 * @param: where, [offset,limit], {orderby}, [query_cols]
-*           -orderby: {key:true/false} true-means asc, false-means desc.
-*           -query_cols: [col1,col2], the cols will be query.
-*           -cb:  function(err, ret:mod[])  {}
+*           - orderby: {key:true/false} true means asc, false means desc.
+*           - query_cols: [col1,col2], the cols will be query. e.g. ['id', 'name']
+*           -cb:  function(err, ret:Array)  {}
 */
 queryWhereSync( where )
 ```
