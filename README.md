@@ -2,6 +2,7 @@ citong db库用于连接数据库,目前仅支持mysql
 
 - [exception](#exception)
 - [define-table](#define-table)
+- [combined-primary-key](#combined-primary-key)
 - [connect-db](#connect-db)
 - [exist](#exist)
 - [query](#query)
@@ -39,7 +40,7 @@ class TableDemo extends citong_table {
       'Admin',  // table name.
       'ID',     // primary key.
       {         // cols.
-        ID:       {type: 'integer', size: 8, key: true}, // the auto-incrementing primary key
+        ID:       {type: 'integer', size: 8, key: true}, // the auto-incrementing
         Name:     {type: 'text',    size:10},
         NumberCol:{type: 'number',  size: 4},
         IntCol:   {type: 'integer', size: 4},
@@ -58,7 +59,30 @@ var db = new database({});
 var tableDemo = new TableDemo(db);
 ```
 
-It will auto ping all the connection.
+
+## combined primary key
+***
+```js
+var citong_table   = require('.').table;
+
+class TableDemo extends citong_table {
+  constructor(dbclient) {
+    super(
+      dbclient, // database
+      'Admin',  // table name.
+      ['ID', 'IntCol'],     // primary keys.
+      {         // cols.
+        ID:       {type: 'integer', size: 8},
+        Name:     {type: 'text',    size:10},
+        NumberCol:{type: 'number',  size: 4},
+        IntCol:   {type: 'integer', size: 4, key: true},  // the auto-incrementing
+        IntCol:   {type: 'integer', size: 8}, // big int.
+        BoolCol:  {type: 'boolean'}
+      }
+    );
+  }
+}
+```
 
 ## connect db.
 ***
@@ -206,6 +230,7 @@ function* transaction() {
 
 # Class database_table_base
 
+- [constructor](#constructor)
 - [isExist](#isxist)
 - [isExistWhere](#isexistwhere)
 - [count](#count-1)
@@ -230,16 +255,51 @@ function* transaction() {
 所有的数据库查询方法都存在相应的同步调用方式, 如: queryWhereSync();
 
 ***
+### constructor.
+```js
+/**
+* @param client: 数据库对象.
+* @param tablename: 本表名.
+* @param idKeyName: 本表主键列表, 如果为单主键可以直接为字符串, 如果为联合多主键则需要为数组.
+* @param model: 本表模型.
+*/
+*constructor(client, tablename, idKeyName, model)
+```
+
+> model的定义格式如下:
+
+> {<br>
+    colName: {type: 'integer', size: 8, key: true}, // the auto-incrementing<br>
+    ...<br>
+  }
+
+- colName: 表示列名称
+- type: 表示列类型
+
+  | 类型 | 说明 | size |
+  |------|--------|----|
+  | 'integer' | 整型  | 指明字节长度 |
+  | 'text' | 字符串   | 指明字符长度 |
+  | 'number' | 浮点型 | 指明字节长度 |
+  | 'boolean' | 布尔型| 无意义 |
+
+- size: 字段长度
+- key:  是否是自增键; (同一个表只能有一个自增键, 当指定多个自增键时, 只认为最后一个为自增)
+
+
+***
 ### isExist.
 ```js
 /**
 * @desc: isExist
+*         id is Array if table is combined primary. 
 *         the last param can be conn.
 * @return: boolean.
 */
 *isExist( id )
 /**
 * @desc: isExist
+*         id is Array if table is combined primary. 
 *         the last param can be conn.
 * @param id, cb
 *         - cb: function(err, r:boolean)  {}
@@ -322,6 +382,8 @@ removeSync( where, cb )
 ```js
 /**
 * @desc: update;  where id = item.id
+*         if item.id is existed, sql condition is: 'id=value' AND (where)
+*         otherwise sql condition is: where 
 *         the last param can be conn.
 * @param item, where.
 * @return: boolean.
@@ -329,6 +391,8 @@ removeSync( where, cb )
 *update( item )
 /**
 * @desc: update;  where id = item.id
+*         if item.id is existed, sql condition is: 'id=value' AND (where)
+*         otherwise sql condition is: where 
 *         the last param can be conn.
 * @param item, where, cb.
 *         - cb: function(err, r:boolrean) {}
@@ -342,6 +406,7 @@ updateSync( item )
 ```js
 /**
 * @desc: query by id.
+*         id is Array if table is combined primary. 
 *         the last param can be conn.
 * @param: id, [query_cols]
 *           query_cols: [col1,col2], the cols will be query.
@@ -350,6 +415,7 @@ updateSync( item )
 *queryById( id )
 /**
 * @desc: query by id.
+*         id is Array if table is combined primary.
 *         the last param can be conn.
 * @param: id, [query_cols], cb
 *          - query_cols: [col1,col2], the cols will be query.
@@ -363,6 +429,7 @@ queryByIdSync( id )
 ```js
 /**
 * @desc: query by id and lock row for update (use in transaction).
+*         id is Array if table is combined primary.
 *         the last param can be conn.
 * @param: id, [query_cols]
 *           query_cols: [col1,col2], the cols will be query.
@@ -371,6 +438,7 @@ queryByIdSync( id )
 *queryLockRow( id )
 /**
 * @desc: query by id and lock row for update (use in transaction).
+*         id is Array if table is combined primary.
 *         the last param can be conn.
 * @param: id, [query_cols], cb
 *           - query_cols: [col1,col2], the cols will be query.

@@ -40,6 +40,19 @@ module.exports = class {
     this.tablename = tablename;
     this.model = model;
     this.idKeyName = idKeyName;
+    this.idKeyIsCombined = (idKeyName instanceof Array);
+    if (this.idKeyIsCombined) {
+      for (let i = 0; i < this.idKeyName.length; i++) {
+        this.model[this.idKeyName[i]].isPrimary = true;
+        if (this.model[this.idKeyName[i]].key === true) {
+          this.idKeyNameAutoInc = this.idKeyName[i];
+        }
+      }
+    } else {
+      this.model[this.idKeyName].isPrimary = true;
+      if (this.model[this.idKeyName].key === true)
+        this.idKeyNameAutoInc = this.idKeyName; 
+    }
     this._boolCols = [];
     for (var k in model) {
       let b = model[k];
@@ -200,7 +213,7 @@ module.exports = class {
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.queryTimeout});
       if (ret && ret.insertId) {
-        item[this.idKeyName] = ret.insertId;
+        item[this.idKeyNameAutoInc] = ret.insertId;
       }
 
       return ret ? true : false;
@@ -223,7 +236,7 @@ module.exports = class {
     let sqlv = this._makeCols1(item);
     let sql = "INSERT INTO `" + this.tablename + "` (" + sqlv[0] + ") VALUES(" + sqlv[1] + ")";
 
-    var idKeyName = this.idKeyName;
+    var idKeyNameAutoInc = this.idKeyNameAutoInc;
     try {
       let ctx = this;
       if (!conn) {
@@ -233,7 +246,7 @@ module.exports = class {
             connection.release();
             if (ret) {
               if (ret.insertId) {
-                item[idKeyName] = ret.insertId;
+                item[idKeyNameAutoInc] = ret.insertId;
               }
               cb(null, true);
             }
@@ -246,7 +259,7 @@ module.exports = class {
         conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret) {
           if (ret) {
             if (ret.insertId) {
-              item[idKeyName] = ret.insertId;
+              item[idKeyNameAutoInc] = ret.insertId;
             }
             cb(null, true);
           }
@@ -332,7 +345,9 @@ module.exports = class {
   }
 
   /**
-  * @desc: update;  where id = item.id
+  * @desc: update;  where id = item.id.
+  *         if item.id is existed, sql condition is: 'id=value' AND (where)
+  *         otherwise sql condition is: where 
   *         the last param can be conn.
   * @param item, where.
   * @return: boolean.
@@ -346,14 +361,31 @@ module.exports = class {
     let sqlv = this._makeCols2(item);
     let sql = "UPDATE `" + this.tablename + "` SET " + sqlv + " WHERE ";
 
-    var id = item[this.idKeyName];
-    if (id)
+    // combined key.
+    let sqlprimary = '';
+
+    if (this.idKeyIsCombined) {
+      for (let i = 0; i < this.idKeyName.length; i++) {
+        let id = item[this.idKeyName[i]];
+        if (id === undefined || id === null) {
+          sqlprimary = null;
+          break;
+        } else {
+          if (i > 0)
+            sqlprimary += ' AND ';
+          sqlprimary += "`" + this.idKeyName[i] + "`=" + this._escape_v(this.idKeyName[i], id);
+        }
+      }
+    } else {
+      let id = item[this.idKeyName];
+      if (id !== undefined && id !== null) {
+        sqlprimary += "`" + this.idKeyName + "`=" + this._escape_v(this.idKeyName, id);
+      }
+    }
+
+    if (sqlprimary)
     {
-      if (isNaN(id))
-        throw new exception('item.id is not a number', exception.DB_ERROR_SQL, __filename, __line);
-
-      sql += "`" + this.idKeyName + "`=" + id;
-
+      sql += sqlprimary;
       if (arguments.length > 1 && typeof arguments[1] === 'string')
       {
         sql += ' AND (' + (arguments[1]) + ')';
@@ -399,14 +431,33 @@ module.exports = class {
 
     let sqlv = this._makeCols2(item);
     let sql = "UPDATE `" + this.tablename + "` SET " + sqlv + " WHERE ";
-    var id = item[this.idKeyName];
-    var cb;
-    if (id)
-    {
-      if (isNaN(id))
-        throw new exception('item.id is not a number', exception.DB_ERROR_SQL, __filename, __line);
+    
+    // combined key.
+    let sqlprimary = '';
 
-      sql += "`" + this.idKeyName + "`=" + id;
+    if (this.idKeyIsCombined) {
+      for (let i = 0; i < this.idKeyName.length; i++) {
+        let id = item[this.idKeyName[i]];
+        if (id === undefined || id === null) {
+          sqlprimary = null;
+          break;
+        } else {
+          if (i > 0)
+            sqlprimary += ' AND ';
+          sqlprimary += "`" + this.idKeyName[i] + "`=" + this._escape_v(this.idKeyName[i], id);
+        }
+      }
+    } else {
+      let id = item[this.idKeyName];
+      if (id !== undefined && id !== null) {
+        sqlprimary += "`" + this.idKeyName + "`=" + this._escape_v(this.idKeyName, id);
+      }
+    }
+
+    var cb;
+    if (sqlprimary)
+    {
+      sql += sqlprimary;
       if (arguments.length > 1 && typeof arguments[1] === 'string')
       {
         sql += ' AND (' + (arguments[1]) + ')';
@@ -462,6 +513,7 @@ module.exports = class {
 
   /**
   * @desc: query by id.
+  *         id is Array if table is combined primary. 
   *         the last param can be conn.
   * @param: id, [query_cols]
   *          - query_cols: [col1,col2], the cols will be query.
@@ -469,8 +521,37 @@ module.exports = class {
   */
   *queryById( id ) {
     assert(id != null && id != undefined);
-    if (isNaN(id))
-      throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
+
+    if (this.idKeyIsCombined && !(id instanceof Array)) {
+      throw new exception('params id is error in queryById', exception.DB_ERROR_SQL, __filename, __line);
+    }
+
+        
+    // combined key.
+    let sqlprimary = '';
+
+    if (this.idKeyIsCombined) {
+      for (let i = 0; i < this.idKeyName.length; i++) {
+        let id2 = id[this.idKeyName[i]];
+        if (id2 === undefined || id2 === null) {
+          sqlprimary = null;
+          break;
+        } else {
+          if (i > 0)
+            sqlprimary += ' AND ';
+          sqlprimary += "`" + this.idKeyName[i] + "`=" + this._escape_v(this.idKeyName[i], id2);
+        }
+      }
+    } else {
+      let id2 = id;
+      if (id2 !== undefined && id2 !== null) {
+        sqlprimary += "`" + this.idKeyName + "`=" + this._escape_v(this.idKeyName, id2);
+      }
+    }
+
+    if (!sqlprimary) {
+      throw new exception('params id is error in queryById', exception.DB_ERROR_SQL, __filename, __line);
+    }
 
     let conn = this.get_conn_db(arguments);
     let needRelease = false;
@@ -480,7 +561,7 @@ module.exports = class {
       query_cols = arguments[1];
     let query_str = this._makeCols3(query_cols);
 
-    let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id;
+    let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE " + sqlprimary;
 
     try {
       if (!conn)  { conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true; }
@@ -508,6 +589,7 @@ module.exports = class {
 
   /**
   * @desc: query by id.
+  *         id is Array if table is combined primary. 
   *         the last param can be conn.
   * @param: id, [query_cols], cb
   *          - query_cols: [col1,col2], the cols will be query.
@@ -515,8 +597,37 @@ module.exports = class {
   */
   queryByIdSync( id ) {
     assert(id != null && id != undefined);
-    if (isNaN(id))
-      throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
+
+    if (this.idKeyIsCombined && !(id instanceof Array)) {
+      throw new exception('params id is error in queryByIdSync', exception.DB_ERROR_SQL, __filename, __line);
+    }
+        
+    // combined key.
+    let sqlprimary = '';
+
+    if (this.idKeyIsCombined) {
+      for (let i = 0; i < this.idKeyName.length; i++) {
+        let id2 = id[this.idKeyName[i]];
+        if (id2 === undefined || id2 === null) {
+          sqlprimary = null;
+          break;
+        } else {
+          if (i > 0)
+            sqlprimary += ' AND ';
+          sqlprimary += "`" + this.idKeyName[i] + "`=" + this._escape_v(this.idKeyName[i], id2);
+        }
+      }
+    } else {
+      let id2 = id;
+      if (id2 !== undefined && id2 !== null) {
+        sqlprimary += "`" + this.idKeyName + "`=" + this._escape_v(this.idKeyName, id2);
+      }
+    }
+
+    if (!sqlprimary) {
+      throw new exception('params id is error in queryByIdSync', exception.DB_ERROR_SQL, __filename, __line);
+    }
+
 
     let conn = this.get_conn_db(arguments);
 
@@ -535,7 +646,7 @@ module.exports = class {
 
     let query_str = this._makeCols3(query_cols);
 
-    let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id;
+    let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE " + sqlprimary;
 
     var ctx = this;
     try {
@@ -586,6 +697,7 @@ module.exports = class {
 
   /**
   * @desc: query by id and lock row for update (use in transaction).
+  *         id is Array if table is combined primary. 
   *         the last param can be conn.
   * @param: id, [query_cols]
   *           query_cols: [col1,col2], the cols will be query.
@@ -593,8 +705,36 @@ module.exports = class {
   */
   *queryLockRow( id ) {
     assert(id != null && id != undefined);
-    if (isNaN(id))
-      throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
+
+    if (this.idKeyIsCombined && !(id instanceof Array)) {
+      throw new exception('params id is error in queryLockRow', exception.DB_ERROR_SQL, __filename, __line);
+    }
+        
+    // combined key.
+    let sqlprimary = '';
+
+    if (this.idKeyIsCombined) {
+      for (let i = 0; i < this.idKeyName.length; i++) {
+        let id2 = id[this.idKeyName[i]];
+        if (id2 === undefined || id2 === null) {
+          sqlprimary = null;
+          break;
+        } else {
+          if (i > 0)
+            sqlprimary += ' AND ';
+          sqlprimary += "`" + this.idKeyName[i] + "`=" + this._escape_v(this.idKeyName[i], id2);
+        }
+      }
+    } else {
+      let id2 = id;
+      if (id2 !== undefined && id2 !== null) {
+        sqlprimary += "`" + this.idKeyName + "`=" + this._escape_v(this.idKeyName, id2);
+      }
+    }
+
+    if (!sqlprimary) {
+      throw new exception('params id is error in queryLockRow', exception.DB_ERROR_SQL, __filename, __line);
+    }
 
     let conn = this.get_conn_db(arguments);
     assert(conn);
@@ -604,7 +744,7 @@ module.exports = class {
       query_cols = arguments[1];
     let query_str = this._makeCols3(query_cols);
 
-    let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id + " FOR UPDATE";
+    let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE " + sqlprimary + " FOR UPDATE";
 
     try {
       var ret = yield citong.utils.denodeify(conn.query, conn)({sql:sql, timeout:this.queryTimeout});
@@ -625,6 +765,7 @@ module.exports = class {
 
   /**
   * @desc: query by id and lock row for update (use in transaction).
+  *         id is Array if table is combined primary. 
   *         the last param can be conn.
   * @param: id, [query_cols], cb
   *           - query_cols: [col1,col2], the cols will be query.
@@ -633,8 +774,36 @@ module.exports = class {
   */
   queryLockRowSync( id ) {
     assert(id != null && id != undefined);
-    if (isNaN(id))
-      throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
+
+    if (this.idKeyIsCombined && !(id instanceof Array)) {
+      throw new exception('params id is error in queryLockRowSync', exception.DB_ERROR_SQL, __filename, __line);
+    }
+        
+    // combined key.
+    let sqlprimary = '';
+
+    if (this.idKeyIsCombined) {
+      for (let i = 0; i < this.idKeyName.length; i++) {
+        let id2 = id[this.idKeyName[i]];
+        if (id2 === undefined || id2 === null) {
+          sqlprimary = null;
+          break;
+        } else {
+          if (i > 0)
+            sqlprimary += ' AND ';
+          sqlprimary += "`" + this.idKeyName[i] + "`=" + this._escape_v(this.idKeyName[i], id2);
+        }
+      }
+    } else {
+      let id2 = id;
+      if (id2 !== undefined && id2 !== null) {
+        sqlprimary += "`" + this.idKeyName + "`=" + this._escape_v(this.idKeyName, id2);
+      }
+    }
+
+    if (!sqlprimary) {
+      throw new exception('params id is error in queryLockRowSync', exception.DB_ERROR_SQL, __filename, __line);
+    }
 
     let conn = this.get_conn_db(arguments);
     assert(conn);
@@ -654,7 +823,7 @@ module.exports = class {
 
     let query_str = this._makeCols3(query_cols);
 
-    let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id + " FOR UPDATE";
+    let sql = "SELECT " + query_str + " FROM `" + this.tablename + "` WHERE " + sqlprimary + " FOR UPDATE";
 
     var ctx = this;
     try {      
@@ -1308,17 +1477,48 @@ module.exports = class {
 
   /**
   * @desc: isExist
+  *         id is Array if table is combined primary. 
   *         the last param can be conn.
   * @return: boolean.
   */
   *isExist( id ) {
-    if (isNaN(id))
-      throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
+
+    assert(id != null && id != undefined);
+
+    if (this.idKeyIsCombined && !(id instanceof Array)) {
+      throw new exception('params id is error in isExist', exception.DB_ERROR_SQL, __filename, __line);
+    }
+        
+    // combined key.
+    let sqlprimary = '';
+
+    if (this.idKeyIsCombined) {
+      for (let i = 0; i < this.idKeyName.length; i++) {
+        let id2 = id[this.idKeyName[i]];
+        if (id2 === undefined || id2 === null) {
+          sqlprimary = null;
+          break;
+        } else {
+          if (i > 0)
+            sqlprimary += ' AND ';
+          sqlprimary += "`" + this.idKeyName[i] + "`=" + this._escape_v(this.idKeyName[i], id2);
+        }
+      }
+    } else {
+      let id2 = id;
+      if (id2 !== undefined && id2 !== null) {
+        sqlprimary += "`" + this.idKeyName + "`=" + this._escape_v(this.idKeyName, id2);
+      }
+    }
+
+    if (!sqlprimary) {
+      throw new exception('params id is error in isExist', exception.DB_ERROR_SQL, __filename, __line);
+    }
 
     let conn = this.get_conn_db(arguments);
     let needRelease = false;
 
-    let sql = "SELECT COUNT(*) FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id + " LIMIT 0,1";
+    let sql = "SELECT COUNT(*) FROM `" + this.tablename + "` WHERE " + sqlprimary + " LIMIT 0,1";
 
     try {
       if (!conn)  { conn = yield citong.utils.denodeify(this.client.getConnection, this.client)(); needRelease = true; }
@@ -1338,17 +1538,48 @@ module.exports = class {
 
   /**
   * @desc: isExist
+  *         id is Array if table is combined primary. 
   *         the last param can be conn.
   * @param id, cb
   *         - cb: function(err, r:boolean)  {}
   */
   isExistSync( id, cb ) {
-    if (isNaN(id))
-      throw new exception('id is not a number', exception.DB_ERROR_SQL, __filename, __line);
+
+    assert(id != null && id != undefined);
+
+    if (this.idKeyIsCombined && !(id instanceof Array)) {
+      throw new exception('params id is error in isExistSync', exception.DB_ERROR_SQL, __filename, __line);
+    }
+        
+    // combined key.
+    let sqlprimary = '';
+
+    if (this.idKeyIsCombined) {
+      for (let i = 0; i < this.idKeyName.length; i++) {
+        let id2 = id[this.idKeyName[i]];
+        if (id2 === undefined || id2 === null) {
+          sqlprimary = null;
+          break;
+        } else {
+          if (i > 0)
+            sqlprimary += ' AND ';
+          sqlprimary += "`" + this.idKeyName[i] + "`=" + this._escape_v(this.idKeyName[i], id2);
+        }
+      }
+    } else {
+      let id2 = id;
+      if (id2 !== undefined && id2 !== null) {
+        sqlprimary += "`" + this.idKeyName + "`=" + this._escape_v(this.idKeyName, id2);
+      }
+    }
+
+    if (!sqlprimary) {
+      throw new exception('params id is error in isExistSync', exception.DB_ERROR_SQL, __filename, __line);
+    }
 
     let conn = this.get_conn_db(arguments);
 
-    let sql = "SELECT COUNT(*) FROM `" + this.tablename + "` WHERE `" + this.idKeyName + "`=" + id + " LIMIT 0,1";
+    let sql = "SELECT COUNT(*) FROM `" + this.tablename + "` WHERE " + sqlprimary + " LIMIT 0,1";
     try {
       let ctx = this;
       if (!conn) {
@@ -1414,9 +1645,9 @@ module.exports = class {
   }
 
   /**
-  * @desc: make (no contain id col. and check col size)
-  *         the string1. `col1`,`col2`,...,`coln`
-  *         the string2. v1,v2,...,vn
+  * @desc: make (no contain 'key===true' col. and check col size)
+  *         the string1: `col1`,`col2`,...,`coln`
+  *         the string2: v1,v2,...,vn
   * @return: [string1, string2].
   */
   _makeCols1( item ) {
@@ -1433,6 +1664,10 @@ module.exports = class {
 
       var v = this.model[k];
       if (v != undefined) {
+        if (v.type == 'integer' && v.key === true) {
+          continue;
+        }
+
         if (first) {
           first = false;
         } else {
@@ -1484,8 +1719,8 @@ module.exports = class {
   }
 
   /**
-  * @desc: make (no contain id col.)
-  *         the string. `col1`=v1,`col2`=v2,...,`coln`=vn
+  * @desc: make (no contain 'key===true' col and primary key.)
+  *         the string: `col1`=v1,`col2`=v2,...,`coln`=vn
   * @return: string.
   */
   _makeCols2( item ) {
@@ -1501,6 +1736,10 @@ module.exports = class {
 
       var v = this.model[k];
       if (v != undefined) {
+        if (v.isPrimary || v.type == 'integer' && v.key === true) {
+          continue;
+        }
+
         if (first) {
           first = false;
         } else {
@@ -1556,7 +1795,7 @@ module.exports = class {
 
   /**
   * @desc: make
-  *         the string1. `col1`,`col2`,...,`coln`
+  *         the string1: `col1`,`col2`,...,`coln`
   *       or '*'
   * @return: string1.
   */
