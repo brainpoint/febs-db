@@ -44,13 +44,13 @@ module.exports = class {
     if (this.idKeyIsCombined) {
       for (let i = 0; i < this.idKeyName.length; i++) {
         this.model[this.idKeyName[i]].isPrimary = true;
-        if (this.model[this.idKeyName[i]].key === true) {
+        if (this.model[this.idKeyName[i]].key === true && this.model[this.idKeyName[i]].type == 'integer') {
           this.idKeyNameAutoInc = this.idKeyName[i];
         }
       }
     } else {
       this.model[this.idKeyName].isPrimary = true;
-      if (this.model[this.idKeyName].key === true)
+      if (this.model[this.idKeyName].key === true && this.model[this.idKeyName].type == 'integer')
         this.idKeyNameAutoInc = this.idKeyName; 
     }
     this._boolCols = [];
