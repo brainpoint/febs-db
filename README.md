@@ -126,6 +126,8 @@ function* query() {
   r = yield table.queryById(1);
   r = yield table.queryById(1, ['ID','Name']);      // only query 'ID','Name' cols.
 
+  r = yield table.queryById({ID:1,IntCol:1}, ['ID','Name']);  // if combined primary key.
+
   r = yield table.queryTop("id = 43");
   r = yield table.queryTop("id = 43", ['ID','Name']);  // only query 'ID','Name' cols.
 
@@ -292,14 +294,14 @@ function* transaction() {
 ```js
 /**
 * @desc: isExist
-*         id is Array if table is combined primary. 
+*         id is Object if table is combined primary. 
 *         the last param can be conn.
 * @return: boolean.
 */
 *isExist( id )
 /**
 * @desc: isExist
-*         id is Array if table is combined primary. 
+*         id is Object if table is combined primary. 
 *         the last param can be conn.
 * @param id, cb
 *         - cb: function(err, r:boolean)  {}
@@ -406,7 +408,7 @@ updateSync( item )
 ```js
 /**
 * @desc: query by id.
-*         id is Array if table is combined primary. 
+*         id is Object if table is combined primary. 
 *         the last param can be conn.
 * @param: id, [query_cols]
 *           query_cols: [col1,col2], the cols will be query.
@@ -429,7 +431,7 @@ queryByIdSync( id )
 ```js
 /**
 * @desc: query by id and lock row for update (use in transaction).
-*         id is Array if table is combined primary.
+*         id is Object if table is combined primary.
 *         the last param can be conn.
 * @param: id, [query_cols]
 *           query_cols: [col1,col2], the cols will be query.
@@ -438,7 +440,7 @@ queryByIdSync( id )
 *queryLockRow( id )
 /**
 * @desc: query by id and lock row for update (use in transaction).
-*         id is Array if table is combined primary.
+*         id is Object if table is combined primary.
 *         the last param can be conn.
 * @param: id, [query_cols], cb
 *           - query_cols: [col1,col2], the cols will be query.

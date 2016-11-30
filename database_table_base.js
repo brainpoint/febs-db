@@ -513,7 +513,7 @@ module.exports = class {
 
   /**
   * @desc: query by id.
-  *         id is Array if table is combined primary. 
+  *         id is object if table is combined primary. 
   *         the last param can be conn.
   * @param: id, [query_cols]
   *          - query_cols: [col1,col2], the cols will be query.
@@ -522,7 +522,7 @@ module.exports = class {
   *queryById( id ) {
     assert(id != null && id != undefined);
 
-    if (this.idKeyIsCombined && !(id instanceof Array)) {
+    if (this.idKeyIsCombined && !(id instanceof Object)) {
       throw new exception('params id is error in queryById', exception.DB_ERROR_SQL, __filename, __line);
     }
 
@@ -589,7 +589,7 @@ module.exports = class {
 
   /**
   * @desc: query by id.
-  *         id is Array if table is combined primary. 
+  *         id is Object if table is combined primary. 
   *         the last param can be conn.
   * @param: id, [query_cols], cb
   *          - query_cols: [col1,col2], the cols will be query.
@@ -598,7 +598,7 @@ module.exports = class {
   queryByIdSync( id ) {
     assert(id != null && id != undefined);
 
-    if (this.idKeyIsCombined && !(id instanceof Array)) {
+    if (this.idKeyIsCombined && !(id instanceof Object)) {
       throw new exception('params id is error in queryByIdSync', exception.DB_ERROR_SQL, __filename, __line);
     }
         
@@ -697,7 +697,7 @@ module.exports = class {
 
   /**
   * @desc: query by id and lock row for update (use in transaction).
-  *         id is Array if table is combined primary. 
+  *         id is Object if table is combined primary. 
   *         the last param can be conn.
   * @param: id, [query_cols]
   *           query_cols: [col1,col2], the cols will be query.
@@ -706,7 +706,7 @@ module.exports = class {
   *queryLockRow( id ) {
     assert(id != null && id != undefined);
 
-    if (this.idKeyIsCombined && !(id instanceof Array)) {
+    if (this.idKeyIsCombined && !(id instanceof Object)) {
       throw new exception('params id is error in queryLockRow', exception.DB_ERROR_SQL, __filename, __line);
     }
         
@@ -765,7 +765,7 @@ module.exports = class {
 
   /**
   * @desc: query by id and lock row for update (use in transaction).
-  *         id is Array if table is combined primary. 
+  *         id is Object if table is combined primary. 
   *         the last param can be conn.
   * @param: id, [query_cols], cb
   *           - query_cols: [col1,col2], the cols will be query.
@@ -775,7 +775,7 @@ module.exports = class {
   queryLockRowSync( id ) {
     assert(id != null && id != undefined);
 
-    if (this.idKeyIsCombined && !(id instanceof Array)) {
+    if (this.idKeyIsCombined && !(id instanceof Object)) {
       throw new exception('params id is error in queryLockRowSync', exception.DB_ERROR_SQL, __filename, __line);
     }
         
@@ -1477,7 +1477,7 @@ module.exports = class {
 
   /**
   * @desc: isExist
-  *         id is Array if table is combined primary. 
+  *         id is Object if table is combined primary. 
   *         the last param can be conn.
   * @return: boolean.
   */
@@ -1485,7 +1485,7 @@ module.exports = class {
 
     assert(id != null && id != undefined);
 
-    if (this.idKeyIsCombined && !(id instanceof Array)) {
+    if (this.idKeyIsCombined && !(id instanceof Object)) {
       throw new exception('params id is error in isExist', exception.DB_ERROR_SQL, __filename, __line);
     }
         
@@ -1538,7 +1538,7 @@ module.exports = class {
 
   /**
   * @desc: isExist
-  *         id is Array if table is combined primary. 
+  *         id is Object if table is combined primary. 
   *         the last param can be conn.
   * @param id, cb
   *         - cb: function(err, r:boolean)  {}
@@ -1547,7 +1547,7 @@ module.exports = class {
 
     assert(id != null && id != undefined);
 
-    if (this.idKeyIsCombined && !(id instanceof Array)) {
+    if (this.idKeyIsCombined && !(id instanceof Object)) {
       throw new exception('params id is error in isExistSync', exception.DB_ERROR_SQL, __filename, __line);
     }
         
