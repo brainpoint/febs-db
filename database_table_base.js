@@ -36,7 +36,7 @@ module.exports = class {
   */
   constructor(client, tablename, idKeyName, model) {
     this.client = client.client;
-    this.queryTimeout = client.queryTimeout;
+    this.queryTimeout = client.queryTimeout || 5000;
     this.tablename = tablename;
     this.model = model;
     this.idKeyName = idKeyName;
@@ -240,9 +240,9 @@ module.exports = class {
     try {
       let ctx = this;
       if (!conn) {
-        this.client.getConnection(function(err, connection){
+        ctx.client.getConnection(function(err, connection){
           if (err) { cb(err, false); return; }
-          connection.query({sql:sql, timeout:this.queryTimeout}, function(err, ret) {
+          connection.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret) {
             connection.release();
             if (ret) {
               if (ret.insertId) {
@@ -256,7 +256,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret) {
+        conn.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret) {
           if (ret) {
             if (ret.insertId) {
               item[idKeyNameAutoInc] = ret.insertId;
@@ -316,9 +316,9 @@ module.exports = class {
     try {
       let ctx = this;
       if (!conn) {
-        this.client.getConnection(function(err, connection){
+        ctx.client.getConnection(function(err, connection){
           if (err) { cb(err, false); return; }
-          connection.query({sql:sql, timeout:this.queryTimeout}, function(err, ret) {
+          connection.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret) {
             connection.release();
             if (ret) {
               cb(null, true);
@@ -329,7 +329,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret) {
+        conn.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret) {
           if (ret) {
             cb(null, true);
           }
@@ -482,9 +482,9 @@ module.exports = class {
     try {
       let ctx = this;
       if (!conn) {
-        this.client.getConnection(function(err, connection){
+        ctx.client.getConnection(function(err, connection){
           if (err) { cb(err, false); return; }
-          connection.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
             connection.release();
             if (ret) {
               cb(null, true);
@@ -495,7 +495,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
           if (ret) {
             cb(null, true);
           }
@@ -651,9 +651,9 @@ module.exports = class {
     var ctx = this;
     try {
       if (!conn) {
-        this.client.getConnection(function(err, connection){
+        ctx.client.getConnection(function(err, connection){
           if (err) { cb(err, false); return; }
-          connection.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
             connection.release();
             // fix boolean col.
             if (ret && ret[0])
@@ -671,7 +671,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
           // fix boolean col.
           if (ret && ret[0])
           {
@@ -827,7 +827,7 @@ module.exports = class {
 
     var ctx = this;
     try {      
-      conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+      conn.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
         if (err)  cb(err, null);
         else
         {
@@ -1250,9 +1250,9 @@ module.exports = class {
       var ctx = this;
 
       if (!conn) {
-        this.client.getConnection(function(err, connection){
+        ctx.client.getConnection(function(err, connection){
           if (err) { cb(err, false); return; }
-          connection.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
             connection.release();
             if (err)  cb(err, null);
             else
@@ -1276,7 +1276,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
           if (err)  cb(err, null);
           else
           {
@@ -1363,9 +1363,9 @@ module.exports = class {
     try {
       let ctx = this;
       if (!conn) {
-        this.client.getConnection(function(err, connection){
+        ctx.client.getConnection(function(err, connection){
           if (err) { cb(err, false); return; }
-          connection.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
             connection.release();
             if (err)  cb(err, null);
             else
@@ -1375,7 +1375,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
           if (err)  cb(err, null);
           else
           {
@@ -1448,9 +1448,9 @@ module.exports = class {
     try {
       let ctx = this;
       if (!conn) {
-        this.client.getConnection(function(err, connection){
+        ctx.client.getConnection(function(err, connection){
           if (err) { cb(err, false); return; }
-          connection.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
             connection.release();
             if (err)  cb(err, null);
             else
@@ -1460,7 +1460,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
           if (err)  cb(err, null);
           else
           {
@@ -1583,9 +1583,9 @@ module.exports = class {
     try {
       let ctx = this;
       if (!conn) {
-        this.client.getConnection(function(err, connection){
+        ctx.client.getConnection(function(err, connection){
           if (err) { cb(err, false); return; }
-          connection.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+          connection.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
             connection.release();
             if (err)  cb(err, null);
             else
@@ -1595,7 +1595,7 @@ module.exports = class {
           });
         });
       } else {   
-        conn.query({sql:sql, timeout:this.queryTimeout}, function(err, ret){
+        conn.query({sql:sql, timeout:ctx.queryTimeout}, function(err, ret){
           if (err)  cb(err, null);
           else
           {

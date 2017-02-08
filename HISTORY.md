@@ -10,3 +10,11 @@
 1.5.0 / 2016-11-28
 ==================
   - Add combined the primary key.
+
+1.5.1 / 2017-2-7
+==================
+  - Bug fix: default queryTimeout.
+
+  
+
+
