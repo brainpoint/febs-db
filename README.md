@@ -331,6 +331,22 @@ var opt = {
   queryTimeout      : 5000,
 };
 ```
+## 方法
+```js
+/**
+* @desc: 执行sql语句.
+* @param values: 传递的参数.
+* @return: 错误返回false. 正确返回结果.
+*/
+*query(sql, values, conn)
+/**
+* @param cb: cb(err, ret)  {}
+* @param values: 传递的参数.
+* @return: void
+*/
+querySync( sql, value, cb, conn )
+```
+
 ## 获取连接
 
 从连接池中获取一个空闲的连接用于事务处理.
@@ -347,6 +363,7 @@ var opt = {
 所有的数据库查询方法都存在相应的同步调用方式, 如: queryWhereSync();
 
 - [constructor](#table-constructor)
+- [getConnection](#table-getconnection)
 - [isExist](#table-isexist)
 - [isExistWhere](#table-isexistwhere)
 - [count](#table-count)
@@ -402,6 +419,16 @@ var opt = {
 
 - `size`: 字段长度(字节长度), 例如: bigint 长度为8, int长度为4.
 - `key`:  是否是自增键; (同一个表只能有一个自增键, 当指定多个自增键时, 只认为最后一个为自增)
+
+### table-getConnection
+
+```js
+/**
+  * @desc: get a new connection for transaction.
+  * @return: database_connection.
+  */
+*getConnection() // * 表明此方法是一个异步方法
+```
 
 ### table-isExist
 
