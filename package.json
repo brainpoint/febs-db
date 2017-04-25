@@ -3,7 +3,7 @@
   "optionalDependencies": {},
   "dependencies": {
     "assert": "^1.4.1",
-    "febs": "0.0.3",
+    "febs": "0.1.11",
     "mysql": "^2.13.0"
   },
   "devDependencies": {
