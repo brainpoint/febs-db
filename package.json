@@ -4,6 +4,7 @@
   "dependencies": {
     "assert": "^1.4.1",
     "febs": "0.1.11",
+    "mssql": "^4.0.4",
     "mysql": "^2.13.0"
   },
   "devDependencies": {
