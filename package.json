@@ -1,14 +1,17 @@
 {
-  "description": "febs db库用于连接数据库,目前仅支持mysql",
+  "description": "febs db库用于连接数据库",
   "optionalDependencies": {},
   "dependencies": {
     "assert": "^1.4.1",
-    "febs": "0.1.11",
+    "bignumber.js": "^4.0.2",
+    "copy-to": "^2.0.1",
+    "febs": "^0.2.4",
     "mssql": "^4.0.4",
     "mysql": "^2.13.0"
   },
   "devDependencies": {
     "co": "^4.6.0",
+    "colors": "^1.1.2",
     "tap": "^10.1.0"
   },
   "homepage": "https://github.com/brainpoint/febs-db#readme",
@@ -16,10 +19,21 @@
     "type": "git",
     "url": "git+ssh://git@github.com/brainpoint/febs-db.git"
   },
+  "engines": {
+    "node": ">=6"
+  },
   "directories": {},
   "license": "MIT",
   "keywords": [
     "mysql",
+    "mssql",
+    "sqlserver",
+    "sqlite",
+    "postgresql",
+    "oracle",
+    "sybase",
+    "sql",
+    "db",
     "orm",
     "febs",
     "febs-db"
@@ -33,7 +47,7 @@
   "main": "lib/index.js",
   "name": "febs-db",
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "tap test/index.js"
   },
-  "version": "0.0.3"
+  "version": "1.0.0"
 }
