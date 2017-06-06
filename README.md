@@ -588,6 +588,7 @@ global.dbagent.transaction(
 - [dbType](#dbtype)
 - [sqlLogCallback](#sqllogcallback)
 - [escapeLike](#escapeLike)
+- [type_cast](#typecast)
 
 ## constructor
 
@@ -729,6 +730,15 @@ get sqlLogCallback()
   * @return: string.
   */
   escapeLike(likeSql)
+```
+
+## type_cast
+```js
+/**
+  * @desc: type cast, 为指定类型和值返回正确的sql值.
+  * @return: 传入不配对的value与type,可引发异常.
+  */
+  type_cast(type, value)
 ```
 
 
