@@ -5,7 +5,7 @@
     "assert": "^1.4.1",
     "bignumber.js": "^4.0.2",
     "copy-to": "^2.0.1",
-    "febs": "^0.2.4",
+    "febs": "^0.2.5",
     "mssql": "^4.0.4",
     "mysql": "^2.13.0"
   },
@@ -49,5 +49,5 @@
   "scripts": {
     "test": "tap test/index.js"
   },
-  "version": "1.1.1"
+  "version": "1.1.2"
 }
