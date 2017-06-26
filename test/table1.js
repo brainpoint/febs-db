@@ -9,17 +9,17 @@ module.exports = class extends tablebase {
     super('table1', 'id',
     {
       id:     {type: dataType.BigInt(true), key: true}, // the auto-incrementing primary key
-      col2:   {type: dataType.VarChar(20)},
-      col3:   {type: dataType.Text()},
-      col4:   {type: dataType.Char(20)},
-      col5:   {type: dataType.Bit()},
-      col6:   {type: dataType.TinyInt()},
-      col7:   {type: dataType.SmallInt()},
-      col8:   {type: dataType.Int()},
-      col9:   {type: dataType.Float()},
-      col10:   {type: dataType.DateTime()},
-      col11:   {type: dataType.Binary(20)},
-      col12:   {type: dataType.VarBinary(20)},
+      col2:   {type: dataType.VarChar(20),  map: 'a'},
+      colx:   {type: dataType.Bit(),        map: 'b'},
+      col3:   {type: dataType.Text(),       map: 'c'},
+      col4:   {type: dataType.Char(20),     map: 'd'},
+      col6:   {type: dataType.TinyInt(),    map: 'e'},
+      col7:   {type: dataType.SmallInt(),   map: 'f'},
+      col8:   {type: dataType.Int(),        map: 'g'},
+      col9:   {type: dataType.Float(),      map: 'h'},
+      col10:   {type: dataType.DateTime(),  map: 'i'},
+      col11:   {type: dataType.Binary(20),  map: 'j'},
+      col12:   {type: dataType.VarBinary(20), map: 'k'},
     });
 	}
 

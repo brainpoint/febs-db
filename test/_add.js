@@ -6,7 +6,7 @@ var test_add = {
     col2:   '123456789',
     col3:   '123\'456789',
     col4:   '1234\\56789',
-    col5:   true,
+    colx:   true,
     col6:   100,
     col7:   3000,
     col8:   655355,

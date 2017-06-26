@@ -12,6 +12,7 @@ febs db库用于连接数据库
   - [register table](#register-table)
   - [combined primary key](#combined-primary-key)
   - [column data type](#column-data-type)
+  - [name map](#name-map)
 - [2.Connect db](#connect-db)
 - [3.Query db](#query-db)
   - [add](#add)
@@ -130,7 +131,7 @@ class dbAgent extends database {
     super('mysql', {});
 
     // 注册数据表.
-    this.registerTable(new TableDemo());
+    this.registerTable(new TableDemo(), 'mapName');
   }
 }
 
@@ -151,7 +152,7 @@ class TableDemo extends tablebase {
       ['ID', 'IntCol'],     // primary keys.
       {         // cols.
         ID:       {type: dataType.BigInt(true), key: true}, // the auto-incrementing
-        Name:     {type: dataType.Varchar(10)},
+        Name:     {type: dataType.Varchar(10), map:'Name1'},
         NumberCol:{type: dataType.Float()},
         IntCol:   {type: dataType.Int(false)},
         BoolCol:  {type: dataType.Bit()}
@@ -185,6 +186,36 @@ class TableDemo extends tablebase {
 | `DateTime` | dataType.DateTime()   | 对应js的`Date`类型;<br> 在数据库中, <br>对应mysql的`datetime`类型,<br>对应sqlserver的`smalldatetime`类型.<br> (YYYY-MM-DD hh:mm:ss) |
 | `Binary` | dataType.Binary(length)   | 对应js的`Buffer`类型 |
 | `VarBinary` | dataType.VarBinary(length)   | 对应js的`Buffer`类型 |
+
+## name map
+
+在定义数据表时, 可以对数据表名和字段名称进行映射, 隐藏真正的字段名称以便保证安全性.
+
+在逻辑编写中使用有意义的名称, 而在数据库定义中使用无意义的名称来保证安全性.
+
+```js
+var tablebase     = require('febs-db').tablebase;
+var dataType      = require('febs-db').dataType;
+
+class TableDemo extends tablebase {
+  constructor() {
+    super(
+      'Admin',  // table name.
+      ['ID', 'IntCol'],     // primary keys.
+      {         // cols.
+        ID:       {type: dataType.BigInt(true), map:'col1', key: true}, // the auto-incrementing
+        Name:     {type: dataType.Varchar(10),  map:'col2'},
+        NumberCol:{type: dataType.Float(),      map:'col3'},
+        IntCol:   {type: dataType.Int(false),   map:'col4'},
+        BoolCol:  {type: dataType.Bit(),        map:'col5'}
+      }
+    );
+  }
+}
+
+database.registerTable(new TableDemo(), 'realName');
+
+```
 
 # Connect db
 
@@ -240,6 +271,11 @@ var opt = {
    * for mssql, encrypt the connect scheme. (Windows Azure)
    */
   encrypt           : true,
+
+  /**
+   * the prefix of table.
+   */
+  table_prefix      : '',
 };
 
 var db = new database(
@@ -644,6 +680,10 @@ var opt = {
    * the password of user.
    */
   password          : '',
+  /**
+   * the prefix of all tables.
+   */
+  table_prefix      : '',
 };
 ```
 
@@ -651,8 +691,9 @@ var opt = {
 ```js
 /**
 * @desc: 注册表格到此数据库.
+* @param mapName: 映射数据中真实的表名.
 */
-registerTable(table)
+registerTable(table, mapName=null)
 ```
 
 ## exec
@@ -754,8 +795,8 @@ get sqlLogCallback()
 - [exist](#exist-1)
 - [tablename](#tablename)
 - [condition](#condition-1)
+- [getLogicColName](#getLogicColName)
 - [db](#db)
-
 
 ### constructor
 ```js
@@ -771,12 +812,13 @@ constructor(tablename, idKeyName, model)
 `model`的定义格式如下:
 
 > {<br>
-    colName: {`type`: dataType.BigInt(10), `key`: true}, // the auto-incrementing<br>
+    colName: {`type`: dataType.BigInt(10), `map`: '', `key`: true}, // the auto-incrementing<br>
     ...<br>
   }
 
 - `colName`: 表示列名称
 - `type`: 表示列类型, 查看 [column data type](#column-data-type)
+- `map`:  映射数据库中真实的字段名称. 如果不指定则使用`colName`
 - `key`:  是否是自增键; (同一个表只能有一个自增键, 当指定多个自增键时, 只认为最后一个为自增)
 
 
@@ -904,6 +946,14 @@ constructor(tablename, idKeyName, model)
   * @return: 
   */
   get condition()
+```
+
+```js
+/**
+  * @desc: 使用字段的映射名称获得字段的逻辑名称.
+  * @return: string; 找不到返回undefined.
+  */
+  getLogicColName(mapName)
 ```
 
 ### db

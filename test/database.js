@@ -26,15 +26,15 @@ module.exports = class Test extends database {
       queueLimit        : 20,
       connectionLimit   : 5,
       host              : '',
-      port              : 1443,
+      port              : 14434,
       user              : '',
       password          : '',
       database          : '',
     });
 
     // table.
-    this.registerTable(new (require('./table1'))());
-    this.registerTable(new (require('./table2'))());
+    this.registerTable(new (require('./table1'))(), 'tableA');
+    this.registerTable(new (require('./table2'))(), 'tableB');
   }
 
 };
