@@ -476,7 +476,7 @@ table.condition.less_equal('colName', value) // return sql string.
 
 构造`key<value`条件语句
 ```js
-table.condition.less_then('colName', value) // return sql string.
+table.condition.less_than('colName', value) // return sql string.
 ```
 
 构造`key<>value`条件语句
@@ -972,7 +972,7 @@ constructor(tablename, idKeyName, model)
 - [more_than](#more_than)
 - [more_equal](#more_equal)
 - [less_equal](#less_equal)
-- [less_then](#less_then)
+- [less_than](#less_than)
 - [not_equal](#not_equal)
 - [like](#like)
 - [between](#between)
@@ -1021,14 +1021,14 @@ constructor(tablename, idKeyName, model)
   less_equal( key, value )
 ```
 
-### less_then
+### less_than
 
 ```js
   /**
   * @desc: 构造一个 key<value的sql条件语句.
   * @return: sql;
   */
-  less_then( key, value )
+  less_than( key, value )
 ```
 
 ### not_equal
