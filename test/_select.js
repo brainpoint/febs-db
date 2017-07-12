@@ -29,7 +29,7 @@ module.exports =  {
       tap.assert( _1.more_than('key', new BigNumber('12343353342434343')) == ' key>12343353342434343 ' );
       tap.assert( _1.more_equal('key', new BigNumber('12343353342434343')) == ' key>=12343353342434343 ' );
       tap.assert( _1.less_equal('key', new BigNumber('12343353342434343')) == ' key<=12343353342434343 ' );
-      tap.assert( _1.less_then('key', new BigNumber('12343353342434343')) == ' key<12343353342434343 ' );
+      tap.assert( _1.less_than('key', new BigNumber('12343353342434343')) == ' key<12343353342434343 ' );
       tap.assert( _1.not_equal('key', new BigNumber('12343353342434343')) == ' key<>12343353342434343 ' );
       // tap.assert( _1.like('key', new BigNumber('12343353342434343')) == ' key LIKE 12343353342434343 ' );
       tap.assert( _1.between('key', new BigNumber('12343353342434343'), 123) == ' key BETWEEN 12343353342434343 AND 123 ' );
@@ -60,7 +60,7 @@ module.exports =  {
       tap.assert( _1.more_than('key', '1234567890') == ' key>\'1234567890\' ' );
       tap.assert( _1.more_equal('key', '1234567890') == ' key>=\'1234567890\' ' );
       tap.assert( _1.less_equal('key', '1234567890') == ' key<=\'1234567890\' ' );
-      tap.assert( _1.less_then('key', '1234567890') == ' key<\'1234567890\' ' );
+      tap.assert( _1.less_than('key', '1234567890') == ' key<\'1234567890\' ' );
       tap.assert( _1.not_equal('key', '1234567890') == ' key<>\'1234567890\' ' );
       tap.assert( _1.like('key', '%1234567890') == ' key LIKE \'%1234567890\' ' );
       tap.assert( _1.between('key', '1234567890', '123') == ' key BETWEEN \'1234567890\' AND \'123\' ' );
@@ -84,7 +84,7 @@ module.exports =  {
       tap.assert( _1.more_than('key', '1234567890') == ' key>\'1234567890\' ' );
       tap.assert( _1.more_equal('key', '1234567890') == ' key>=\'1234567890\' ' );
       tap.assert( _1.less_equal('key', '1234567890') == ' key<=\'1234567890\' ' );
-      tap.assert( _1.less_then('key', '1234567890') == ' key<\'1234567890\' ' );
+      tap.assert( _1.less_than('key', '1234567890') == ' key<\'1234567890\' ' );
       tap.assert( _1.not_equal('key', '1234567890') == ' key<>\'1234567890\' ' );
       tap.assert( _1.like('key', '%1234567890') == ' key LIKE \'%1234567890\' ' );
       tap.assert( _1.between('key', '1234567890', '123') == ' key BETWEEN \'1234567890\' AND \'123\' ' );
@@ -111,7 +111,7 @@ module.exports =  {
       tap.assert( _1.more_than('key', '1234567890') == ' key>\'1234567890\' ' );
       tap.assert( _1.more_equal('key', '1234567890') == ' key>=\'1234567890\' ' );
       tap.assert( _1.less_equal('key', '1234567890') == ' key<=\'1234567890\' ' );
-      tap.assert( _1.less_then('key', '1234567890') == ' key<\'1234567890\' ' );
+      tap.assert( _1.less_than('key', '1234567890') == ' key<\'1234567890\' ' );
       tap.assert( _1.not_equal('key', '1234567890') == ' key<>\'1234567890\' ' );
       tap.assert( _1.like('key', '%1234567890') == ' key LIKE \'%1234567890\' ' );
       tap.assert( _1.between('key', '1234567890', '123') == ' key BETWEEN \'1234567890\' AND \'123\' ' );
@@ -157,7 +157,7 @@ module.exports =  {
       tap.assert( _1.more_than('key', 123) == ' key>123 ' );
       tap.assert( _1.more_equal('key', 123) == ' key>=123 ' );
       tap.assert( _1.less_equal('key', 123) == ' key<=123 ' );
-      tap.assert( _1.less_then('key', 123) == ' key<123 ' );
+      tap.assert( _1.less_than('key', 123) == ' key<123 ' );
       tap.assert( _1.not_equal('key', 123) == ' key<>123 ' );
       tap.assert( _1.between('key', 100, 123) == ' key BETWEEN 100 AND 123 ' );
       tap.assert( _1.in('key', [123]) == ' key IN (123) ' );
@@ -199,7 +199,7 @@ module.exports =  {
       tap.assert( _1.more_than('key', 123) == ' key>123 ' );
       tap.assert( _1.more_equal('key', 123) == ' key>=123 ' );
       tap.assert( _1.less_equal('key', 123) == ' key<=123 ' );
-      tap.assert( _1.less_then('key', 123) == ' key<123 ' );
+      tap.assert( _1.less_than('key', 123) == ' key<123 ' );
       tap.assert( _1.not_equal('key', 123) == ' key<>123 ' );
       tap.assert( _1.between('key', 100, 123) == ' key BETWEEN 100 AND 123 ' );
       tap.assert( _1.in('key', [123]) == ' key IN (123) ' );
@@ -238,7 +238,7 @@ module.exports =  {
       tap.assert( _1.more_than('key', 123) == ' key>123 ' );
       tap.assert( _1.more_equal('key', 123) == ' key>=123 ' );
       tap.assert( _1.less_equal('key', 123) == ' key<=123 ' );
-      tap.assert( _1.less_then('key', 123) == ' key<123 ' );
+      tap.assert( _1.less_than('key', 123) == ' key<123 ' );
       tap.assert( _1.not_equal('key', 123) == ' key<>123 ' );
       tap.assert( _1.between('key', 100, 123) == ' key BETWEEN 100 AND 123 ' );
       tap.assert( _1.in('key', [123]) == ' key IN (123) ' );
@@ -272,7 +272,7 @@ module.exports =  {
       tap.assert( _1.more_than('key', 123.23434) == ' key>123.23434 ' );
       tap.assert( _1.more_equal('key', 123.23434) == ' key>=123.23434 ' );
       tap.assert( _1.less_equal('key', 123.23434) == ' key<=123.23434 ' );
-      tap.assert( _1.less_then('key', 123.23434) == ' key<123.23434 ' );
+      tap.assert( _1.less_than('key', 123.23434) == ' key<123.23434 ' );
       tap.assert( _1.not_equal('key', 123.23434) == ' key<>123.23434 ' );
       tap.assert( _1.between('key', 123.23434, 123) == ' key BETWEEN 123.23434 AND 123 ' );
       tap.assert( _1.in('key', [123]) == ' key IN (123) ' );
