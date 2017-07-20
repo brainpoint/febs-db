@@ -10,13 +10,14 @@ var database = require('./database');
 var table1   = require('./table1');
 
 
+__debug = true;
 var db = new database();
 
 // set sql log callback.
 db.sqlLogCallback = function(err, sql) {
   console.log(`
-  ${febs.utils.getTimeString(Date.now(), '[yyyy-MM-dd hh:mm:ss]')}
-  ${sql.green}
+${febs.utils.getTimeString(Date.now(), '[yyyy-MM-dd hh:mm:ss]')}
+${sql.green}
   `);
 }
 

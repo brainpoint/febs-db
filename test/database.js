@@ -8,9 +8,9 @@
 
 var tap       = require('tap');
 var febs      = require('febs');
-var database  = require('..').database;
-var table     = require('..').table;
-var exception = require('..').exception;
+var database  = require('../lib').database;
+var table     = require('../lib').table;
+var exception = require('../lib').exception;
 var co        = require('co');
 
 
@@ -23,13 +23,14 @@ module.exports = class Test extends database {
       queryTimeout      : 5000,
       connectTimeout    : 5000,
       acquireTimeout    : 5000,
-      queueLimit        : 20,
-      connectionLimit   : 5,
+      queueLimit        : 200,
+      connectionLimit   : 10,
       host              : '',
       port              : 14434,
       user              : '',
       password          : '',
       database          : '',
+      encrypt           : true,
     });
 
     // table.

@@ -3,10 +3,11 @@ var co        = require('co');
 var febs      = require('febs');
 var tap       = require('tap');
 var BigNumber = require('bignumber.js');
-var condition = require('..').condition;
-var dataType  = require('..').dataType;
-var isolationLevel = require('..').isolationLevel;
+var condition = require('../lib').condition;
+var dataType  = require('../lib').dataType;
+var isolationLevel = require('../lib').isolationLevel;
 var database  = require('./database');
+var colors = require('colors');
 
 var test_add = {
     col2:   '123456789',
@@ -35,6 +36,8 @@ module.exports =  {
   * @return: 
   */
   test(dbsrc) {
+
+    // trans1.
     dbsrc.transaction(isolationLevel.Repeatable_read, async function(db1){
       tap.assert(db1 !== dbsrc);
 
@@ -65,6 +68,131 @@ module.exports =  {
     })
     .then(res=>{
       console.log(`[promise transaction] is ${res?'commit':'rollback'}`);
+      console.log('');
+    })
+    .catch(e=>{
+      console.log(e);
+    });
+  },
+
+
+  /**
+  * @desc: query use promise.
+  * @return: 
+  */
+  test_Repeatable_read_and_lock(dbsrc) {
+
+    console.log('');
+    console.log('-- test_Repeatable_read_and_lock --');
+
+    // trans1.
+    dbsrc.transaction(isolationLevel.Read_uncommitted, async function(db1){
+      console.log('trans1 begin');
+      console.log('    trans1.table1.select()...');
+      let ret = await db1.table1.select('id=100');
+      console.log('    trans1.table1.select() ok;');
+
+      ret[0].col2 = 'sdfdf';
+      console.log('    trans1.table1.update()...');
+      await db1.table1.update(ret[0]);
+      console.log('    trans1.table1.update() ok;');
+
+      console.log('    trans1 sleep...');
+      await febs.utils.sleep(2000);
+      console.log('    trans1 wakeup');
+
+      console.log('    trans1.table2.select()...');
+      await db1.table2.select();
+      console.log('    trans1.table2.select() ok;');
+      return true;
+    })
+    .then(res=>{
+      console.log('trans1 ok;');
+      console.log('');
+    })
+    .catch(e=>{
+      console.log(e);
+    });
+
+
+    // trans2.
+    dbsrc.transaction(isolationLevel.Repeatable_read, async function(db1){
+      console.log('trans2 begin'.green);
+      console.log('    trans2.table1.select()...'.green);
+      let ret = await db1.table1.select('id=100');
+      console.log('    trans2.table1.select() ok;'.green);
+
+      console.log('    trans2 sleep...'.green);
+      await febs.utils.sleep(2000);
+      console.log('    trans2 wakeup'.green);
+
+      console.log('    trans2.table2.select()...'.green);
+      await db1.table2.select();
+      console.log('    trans2.table2.select() ok;'.green);
+      return true;
+    })
+    .then(res=>{
+      console.log('trans2 ok;'.green);
+      console.log('');
+    })
+    .catch(e=>{
+      console.log(e);
+    });
+  },
+
+
+  /**
+  * @desc: query use promise.
+  * @return: 
+  */
+  test_Serializable(dbsrc) {
+
+    console.log('');
+    console.log('-- test_Serializable --');
+
+    // trans1.
+    dbsrc.transaction(isolationLevel.Serializable, async function(db1){
+      console.log('trans1 begin');
+      console.log('    trans1.table1.select()...');
+      let ret = await db1.table1.select('id<100');
+      console.log('    trans1.table1.select() ok;');
+
+      console.log('    trans1 sleep...');
+      await febs.utils.sleep(2000);
+      console.log('    trans1 wakeup');
+
+      console.log('    trans1.table2.select()...');
+      await db1.table2.select();
+      console.log('    trans1.table2.select() ok;');
+      return true;
+    })
+    .then(res=>{
+      console.log('trans1 ok;');
+      console.log('');
+    })
+    .catch(e=>{
+      console.log(e);
+    });
+
+
+    // trans2.
+    dbsrc.transaction(isolationLevel.Read_committed, async function(db1){
+      console.log('trans2 begin'.green);
+      console.log('    trans2.table1.select()...'.green);
+      let ret = await db1.table1.select('id<100');
+      console.log('    trans2.table1.select() ok;'.green);
+
+      console.log('    trans2 sleep...'.green);
+      await febs.utils.sleep(2000);
+      console.log('    trans2 wakeup'.green);
+
+      console.log('    trans2.table2.select()...'.green);
+      await db1.table2.select();
+      console.log('    trans2.table2.select() ok;'.green);
+      return true;
+    })
+    .then(res=>{
+      console.log('trans2 ok;'.green);
       console.log('');
     })
     .catch(e=>{

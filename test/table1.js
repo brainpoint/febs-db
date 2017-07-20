@@ -1,7 +1,7 @@
 
 var co        = require('co');
-var tablebase = require('..').tablebase;
-var dataType  = require('..').dataType;
+var tablebase = require('../lib').tablebase;
+var dataType  = require('../lib').dataType;
 
 module.exports = class extends tablebase {
 
