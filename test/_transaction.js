@@ -86,7 +86,7 @@ module.exports =  {
     console.log('-- test_Repeatable_read_and_lock --');
 
     // trans1.
-    dbsrc.transaction(isolationLevel.Read_uncommitted, async function(db1){
+    dbsrc.transaction(isolationLevel.Repeatable_read, async function(db1){
       console.log('trans1 begin');
       console.log('    trans1.table1.select()...');
       let ret = await db1.table1.select('id=100');
@@ -119,7 +119,7 @@ module.exports =  {
     dbsrc.transaction(isolationLevel.Repeatable_read, async function(db1){
       console.log('trans2 begin'.green);
       console.log('    trans2.table1.select()...'.green);
-      let ret = await db1.table1.select('id=100');
+      let ret = await db1.table1.select('id<=100');
       console.log('    trans2.table1.select() ok;'.green);
 
       console.log('    trans2 sleep...'.green);
