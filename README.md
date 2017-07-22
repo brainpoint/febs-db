@@ -1107,6 +1107,8 @@ constructor(tablename, idKeyName, model)
 - [getType](#gettype)
 - [isIntegerType](#isintegertype)
 - [isStringType](#isstringtype)
+- [getValueBigInt](#getValueBigInt)
+- [getValueBit](#getValueBit)
 
 ### getType
 
@@ -1133,4 +1135,24 @@ constructor(tablename, idKeyName, model)
   * @desc: 判断类型是否为字符串. 
   */
   isStringType (value)
+```
+
+## getValueBigInt
+
+```js
+  /**
+   * 将sql类型的bigint值转换成nodejs值, 大于13位的数值将使用bignumber, 否者使用number.
+   * @param {*} sqlValue 数据库bigint值.
+   */
+  getValueBigInt(sqlValue)
+```
+
+## getValueBit
+
+```js
+  /**
+   * 将sql类型的bit值转换成nodejs值
+   * @param {*} sqlValue 数据库bit值.
+   */
+  getValueBit(sqlValue)
 ```
