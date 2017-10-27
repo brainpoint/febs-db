@@ -13,8 +13,10 @@ module.exports =  {
 
     // table.add({dt:new Date()}).then(res=>{
     table.select().then(res=>{
-      console.log(res[0].dt);
-    }).catch(err=>{ console.log(err); });
+      // console.log(res[0].dt);
+    }).catch(err=>{ 
+      console.log(err); 
+    });
   // });
     
     // table.count(null)

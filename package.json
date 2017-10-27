@@ -1,5 +1,5 @@
 {
-  "description": "febs db库用于连接数据库",
+  "description": "febs-db is a ORM",
   "optionalDependencies": {},
   "dependencies": {
     "assert": "^1.4.1",
@@ -49,5 +49,5 @@
   "scripts": {
     "test": "tap test/index.js"
   },
-  "version": "1.1.29"
+  "version": "1.1.30"
 }

@@ -55,4 +55,9 @@ setInterval(()=>{
   test.test(db);
   test.test(db);
   test.test(db);
+  test.test(db);
+  test.test(db);
+  test.test(db);
+  test.test(db);
+  test.test(db);
 }, 500);

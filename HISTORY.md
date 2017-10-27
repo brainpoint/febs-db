@@ -48,3 +48,7 @@
 1.1.18
 ==================
   - [bugfix] Datetime utc时间获取转换问题.
+
+1.1.30
+==================
+  - [enhancement] 修改为非 construction方式导出.
