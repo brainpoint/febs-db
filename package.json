@@ -6,7 +6,7 @@
     "bignumber.js": "^4.0.2",
     "copy-to": "^2.0.1",
     "debug": "^3.1.0",
-    "febs": "^0.2.7",
+    "febs": "^0.3.9",
     "mssql": "^4.0.4",
     "mysql": "^2.13.0"
   },
@@ -46,9 +46,10 @@
     }
   ],
   "main": "lib/index.js",
+  "types": "./types/index.d.ts",
   "name": "febs-db",
   "scripts": {
     "test": "tap test/index.js"
   },
-  "version": "1.1.31"
+  "version": "1.1.33"
 }

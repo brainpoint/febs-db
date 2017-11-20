@@ -777,7 +777,7 @@ get sqlLogCallback()
 ```js
 /**
   * @desc: type cast, 为指定类型和值返回正确的sql值.
-  * @return: 传入不配对的value与type,可引发异常.
+  * @return: 传入不配对的value与type,可引发异常. 返回sql.
   */
   type_cast(type, value)
 ```

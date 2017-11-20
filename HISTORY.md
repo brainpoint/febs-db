@@ -52,3 +52,9 @@
 1.1.30
 ==================
   - [enhancement] 修改为非 construction方式导出.
+
+1.1.32
+==================
+  - [enhancement] delete key 'RowNumber' in result.
+  - [bugfix] connectPool problem.
+  
