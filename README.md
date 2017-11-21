@@ -247,6 +247,10 @@ var opt = {
    */
   connectionLimit   : 10,
   /**
+   * idle timeout to recreate connect.
+   */
+  idleTimeoutMillis : 600000,
+  /**
    * database host.
    */
   host              : '',

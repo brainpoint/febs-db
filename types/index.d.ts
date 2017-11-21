@@ -150,6 +150,8 @@ declare namespace febsdb {
          * max count of connection in pool.
          */
         connectionLimit?: number;
+        
+        idleTimeoutMillis?: number;
         /**
          * database host.
          */
