@@ -180,7 +180,7 @@ export class database {
   * @desc: 注册表格到此数据库.
   * @param mapName: 映射数据中真实的表名.
   */
-  registerTable(table: string, mapName?: string): void;
+  registerTable(table: tablebase, mapName?: string): void;
   /**
   * @desc: 执行sql语句.
   * @return: Promise.
@@ -217,7 +217,7 @@ export class database {
   * @resolve:
   *     ret - 是否成功提交.
   */
-  transaction(isolationLevel: string, taskCB: (db: database) => boolean): Promise<boolean>;
+  transaction(isolationLevel: string, taskCB: (db: any) => Promise<boolean>|boolean): Promise<boolean>;
 
   /**
   * @desc: 数据库类型.
@@ -251,7 +251,7 @@ export class tablebase {
   * @param tablename: 本表名.
   * @param model: 本表模型.
   */
-  constructor(tablename: string, idKeyName: string | Array<string>, model: Array<any>);
+  constructor(tablename: string, idKeyName: string | Array<string>, model: object);
 
   /**
   * @desc: add
@@ -332,14 +332,17 @@ export class tablebase {
   exist(id: any): Promise<boolean>;
 
   /**
-  * @desc: 表名称.
-  * @return: string.
+  * @desc: 真实表名称.
   */
   tablename: string;
 
   /**
+  * @desc: 本表模型
+  */
+  model : any;
+
+  /**
   * @desc: 条件构造对象，使用此对象可以在类型安全的情况下构造查询条件.
-  * @return: 
   */
   condition: condition;
 
@@ -354,6 +357,16 @@ export class tablebase {
   * @return: 
   */
   db: database;
+
+  /**
+  * @desc: 主键
+  */
+  idKeyName : string|string[];
+
+  /**
+  * @desc: 自增键.
+  */
+  idKeyNameAutoInc: string;
 }
 
 export interface select_opt {
@@ -374,53 +387,53 @@ export class condition {
   * @desc: 构造一个 key=value的sql条件语句.
   * @return: sql;
   */
-  equal(key: string, value: any): string;
+  equal(key: string|string[], value: any): string;
   /**
   * @desc: 构造一个 key>value的sql条件语句.
   * @return: sql;
   */
-  more_than(key: string, value: any): string;
+  more_than(key: string|string[], value: any): string;
   /**
   * @desc: 构造一个 key>=value的sql条件语句.
   * @return: sql;
   */
-  more_equal(key: string, value: any): string;
+  more_equal(key: string|string[], value: any): string;
   /**
   * @desc: 构造一个 key<=value的sql条件语句.
   * @return: sql;
   */
-  less_equal(key: string, value: any): string;
+  less_equal(key: string|string[], value: any): string;
   /**
   * @desc: 构造一个 key<value的sql条件语句.
   * @return: sql;
   */
-  less_than(key: string, value: any): string;
+  less_than(key: string|string[], value: any): string;
   /**
   * @desc: 构造一个 key<>value的sql条件语句.
   * @return: sql;
   */
-  not_equal(key: string, value: any): string;
+  not_equal(key: string|string[], value: any): string;
   /**
   * @desc: 构造一个 key LIKE value的sql条件语句.
   *     不对value值进行反义操作.
   * @return: sql;
   */
-  like(key: string, value: any): string;
+  like(key: string|string[], value: any): string;
   /**
   * @desc: 构造一个 key BETWEEN value1 AND value2的sql条件语句
   * @return: sql;
   */
-  between(key: string, value1: any, value2: any): string;
+  between(key: string|string[], value1: any, value2: any): string;
   /**
   * @desc: 构造一个 key IN (value1, value2, ...) 的sql条件语句
   * @return: sql;
   */
-  in(key: string, valueArray: Array<any>): string;
+  in(key: string|string[], valueArray: Array<any>): string;
   /**
   * @desc: 构造一个 key NOT IN (value1, value2, ...) 的sql条件语句
   * @return: sql;
   */
-  not_in(key: string, valueArray: Array<any>): string;
+  not_in(key: string|string[], valueArray: Array<any>): string;
   /**
   * @desc: 在update中使用, 用于表明sql中字段自增n.
   * @example: col=col+n
