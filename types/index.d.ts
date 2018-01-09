@@ -351,6 +351,11 @@ export class tablebase {
   * @return: string; 找不到返回undefined.
   */
   getLogicColName(mapName: string): string | undefined;
+  /**
+  * @desc: 使用字段的model名称获得字段的映射名称(真实名称).
+  * @return: string; 找不到返回undefined.
+  */
+  getRealColName(colName: string): string | undefined;
 
   /**
   * @desc: 所属数据库.
