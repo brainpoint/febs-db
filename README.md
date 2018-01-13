@@ -629,6 +629,8 @@ global.dbagent.transaction(
 - [sqlLogCallback](#sqllogcallback)
 - [escapeLike](#escapeLike)
 - [type_cast](#typecast)
+- [ret_data_cvt](#ret_data_cvt)
+
 
 ## constructor
 
@@ -784,6 +786,15 @@ get sqlLogCallback()
   * @return: 传入不配对的value与type,可引发异常. 返回sql.
   */
   type_cast(type, value)
+```
+
+## ret_data_cvt
+```js
+/**
+* @desc: 转换查询结果中的数据,按类型转换.
+* @return: 
+*/
+  ret_data_cvt(rows, table)
 ```
 
 

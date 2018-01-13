@@ -242,6 +242,12 @@ export class database {
   * @return: 传入不配对的value与type,可引发异常. 返回sql.
   */
   type_cast(type: any, value: any): string;
+
+  /**
+  * @desc: 转换查询结果中的数据,按类型转换.
+  * @return: 
+  */
+  ret_data_cvt(rows:any[], table:tablebase):any[];
 }
 
 export class tablebase {
