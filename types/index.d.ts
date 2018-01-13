@@ -392,58 +392,58 @@ export class condition {
   * @desc: 构造一个 key=value的sql条件语句.
   * @return: sql;
   */
-  equal(key: string|string[], value: any): string;
+  equal(key: string|string[], value: any, alias?:string): string;
   /**
   * @desc: 构造一个 key>value的sql条件语句.
   * @return: sql;
   */
-  more_than(key: string|string[], value: any): string;
+  more_than(key: string|string[], value: any, alias?:string): string;
   /**
   * @desc: 构造一个 key>=value的sql条件语句.
   * @return: sql;
   */
-  more_equal(key: string|string[], value: any): string;
+  more_equal(key: string|string[], value: any, alias?:string): string;
   /**
   * @desc: 构造一个 key<=value的sql条件语句.
   * @return: sql;
   */
-  less_equal(key: string|string[], value: any): string;
+  less_equal(key: string|string[], value: any, alias?:string): string;
   /**
   * @desc: 构造一个 key<value的sql条件语句.
   * @return: sql;
   */
-  less_than(key: string|string[], value: any): string;
+  less_than(key: string|string[], value: any, alias?:string): string;
   /**
   * @desc: 构造一个 key<>value的sql条件语句.
   * @return: sql;
   */
-  not_equal(key: string|string[], value: any): string;
+  not_equal(key: string|string[], value: any, alias?:string): string;
   /**
   * @desc: 构造一个 key LIKE value的sql条件语句.
   *     不对value值进行反义操作.
   * @return: sql;
   */
-  like(key: string|string[], value: any): string;
+  like(key: string|string[], value: any, alias?:string): string;
   /**
   * @desc: 构造一个 key BETWEEN value1 AND value2的sql条件语句
   * @return: sql;
   */
-  between(key: string|string[], value1: any, value2: any): string;
+  between(key: string|string[], value1: any, value2: any, alias?:string): string;
   /**
   * @desc: 构造一个 key IN (value1, value2, ...) 的sql条件语句
   * @return: sql;
   */
-  in(key: string|string[], valueArray: Array<any>): string;
+  in(key: string|string[], valueArray: Array<any>, alias?:string): string;
   /**
   * @desc: 构造一个 key NOT IN (value1, value2, ...) 的sql条件语句
   * @return: sql;
   */
-  not_in(key: string|string[], valueArray: Array<any>): string;
+  not_in(key: string|string[], valueArray: Array<any>, alias?:string): string;
   /**
   * @desc: 在update中使用, 用于表明sql中字段自增n.
   * @example: col=col+n
   */
-  col_inc(n: number): any;
+  col_inc(n: number, alias?:string): any;
   /**
   * @desc: 在update中使用, 用于表明 col=v, 将不对v进行任何检验.(也不在v字符串两边加'符号)
   */
