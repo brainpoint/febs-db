@@ -808,6 +808,12 @@ get sqlLogCallback()
 - [select](#select-1)
 - [count](#count-1)
 - [exist](#exist-1)
+- [sql_add](#sql_add)
+- [sql_remove](#sql_remove)
+- [sql_update](#sql_update)
+- [sql_selectLockRow](#sql_selectlockrow)
+- [sql_select](#sql_select)
+- [sql_count](#sql_count)
 - [tablename](#tablename)
 - [condition](#condition-1)
 - [getLogicColName](#getLogicColName)
@@ -942,6 +948,55 @@ constructor(tablename, idKeyName, model)
   */
   exist(id)
 ```
+
+```js
+/**
+* @desc: 返回sql add.
+* @return: string
+*/
+sql_add(item)
+```
+
+```js
+/**
+* @desc: 返回sql remove.
+* @return: string
+*/
+sql_remove(where)
+```
+
+```js
+/**
+* @desc: 返回sql remove.
+* @return: string
+*/
+sql_update(item, where = null)
+```
+
+```js
+/**
+* @desc: 返回sql selectLockRow.
+* @return: string
+*/
+sql_selectLockRow(id, cols = null, alias=null)
+```
+
+```js
+/**
+* @desc: 返回sql select.
+* @return: string
+*/
+sql_select(where, opt = null, alias=null)
+```
+
+```js
+/**
+* @desc: 返回sql count.
+* @return: string
+*/
+sql_count(where, alias=null)
+```
+
 
 ### tablename
 
