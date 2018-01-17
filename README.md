@@ -949,6 +949,8 @@ constructor(tablename, idKeyName, model)
   exist(id)
 ```
 
+### sql_add
+
 ```js
 /**
 * @desc: 返回sql add.
@@ -956,6 +958,9 @@ constructor(tablename, idKeyName, model)
 */
 sql_add(item)
 ```
+
+### sql_remove
+
 
 ```js
 /**
@@ -965,6 +970,9 @@ sql_add(item)
 sql_remove(where)
 ```
 
+### sql_update
+
+
 ```js
 /**
 * @desc: 返回sql remove.
@@ -972,6 +980,9 @@ sql_remove(where)
 */
 sql_update(item, where = null)
 ```
+
+### sql_selectLockRow
+
 
 ```js
 /**
@@ -981,6 +992,9 @@ sql_update(item, where = null)
 sql_selectLockRow(id, cols = null, alias=null)
 ```
 
+### sql_select
+
+
 ```js
 /**
 * @desc: 返回sql select.
@@ -988,6 +1002,9 @@ sql_selectLockRow(id, cols = null, alias=null)
 */
 sql_select(where, opt = null, alias=null)
 ```
+
+### sql_count
+
 
 ```js
 /**

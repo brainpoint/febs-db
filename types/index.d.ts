@@ -338,6 +338,42 @@ export class tablebase {
   exist(id: any): Promise<boolean>;
 
   /**
+  * @desc: 返回sql add.
+  * @return: string
+  */
+  sql_add(item:any):string;
+
+  /**
+  * @desc: 返回sql remove.
+  * @return: string
+  */
+  sql_remove(where:string):string;
+
+  /**
+  * @desc: 返回sql remove.
+  * @return: string
+  */
+  sql_update(item:any, where?:string):string;
+
+  /**
+  * @desc: 返回sql selectLockRow.
+  * @return: string
+  */
+  sql_selectLockRow(id:any, cols?:string[], alias?:string):string;
+
+  /**
+  * @desc: 返回sql select.
+  * @return: string
+  */
+  sql_select(where:string, opt?:select_opt, alias?:string):string;
+
+  /**
+  * @desc: 返回sql count.
+  * @return: string
+  */
+  sql_count(where:string, alias?:string):string;
+
+  /**
   * @desc: 真实表名称.
   */
   tablename: string;
