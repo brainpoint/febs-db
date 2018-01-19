@@ -26,6 +26,7 @@ febs db库用于连接数据库
   - [condition](#condition)
 - [4.Transaction](#transaction)
   - [isolation level](#isolation-level)
+- [5.Join](#Join)
 - [Class database API](#class-database-api)
 - [Class tablebase API](#class-tablebase-api)
 - [Class condition API](#class-condition-api)
@@ -580,7 +581,6 @@ isolationLevel.Serializable;
 | Serializable | × | × | × |
 
 
-
 ```js
 //
 // 开启sql日志. global.dbagent 是预先存储的全局数据库对象
@@ -617,6 +617,25 @@ global.dbagent.transaction(
       console.log(`the transaction is rollback`);
   })
   .catch(err=>{  });
+```
+
+# Join
+
+```js
+
+  let table1 = new Table1(...);
+  let table2 = new Table2(...); 
+  let table3 = new Table3(...); 
+
+  let join = table1.join_inner(table2)
+                   .set_alias1('A')
+                   .set_alias2('B')
+                   .on('A.id = B.id')
+                   .join_inner(table3);
+
+  // select ... from (table1 as A inner join table2 as B on A.id = B.id) inner join table3.
+  join.sql_select(...);
+
 ```
 
 # Class database API
@@ -1307,6 +1326,11 @@ sql_count(where, alias=null)
 - [table2](#table1)
 - [alias1](#alias1)
 - [alias2](#alias1)
+- [join_inner](#join_inner-1)
+- [join_cross](#join_cross-1)
+- [join_left](#join_left-1)
+- [join_right](#join_right-1)
+- [join_full](#join_full-1)
 
 ### sql_select
 
@@ -1323,7 +1347,7 @@ sql_count(where, alias=null)
 
 ```js
   /**
-  * @desc: 设置别名1.
+  * @desc: 设置别名1. (仅第一次join时可以设置.)
   * @return: 支持语法糖
   */
   set_alias1(aliasName)
@@ -1333,7 +1357,7 @@ sql_count(where, alias=null)
 
 ```js
   /**
-  * @desc: 设置别名2.
+  * @desc: 设置别名2.
   * @return: 支持语法糖
   */
   set_alias2(aliasName)
@@ -1353,7 +1377,7 @@ sql_count(where, alias=null)
 
 ```js
   /**
-  * @desc: table1对象. table2对象.
+  * @desc: 当前操作的 table1对象. table2对象.
   */
   get table1;
   get table2;
@@ -1363,8 +1387,55 @@ sql_count(where, alias=null)
 
 ```js
   /**
-  * @desc: table1对象别名. table2对象别名.
+  * @desc: 当前操作的 table1对象别名. table2对象别名.
+  * @return: 返回的alias为: 'aliasName.'; 如果alias为空, 则返回 '';
   */
   get alias1;
   get alias2;
+```
+
+
+### join_inner
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象. 后续在新的join上操作
+  */
+  join_inner(tableB)
+```
+
+### join_cross
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象. 后续在新的join上操作
+  */
+  join_cross(tableB)
+```
+
+### join_left
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象. 后续在新的join上操作
+  */
+  join_left(tableB)
+```
+
+### join_right
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象. 后续在新的join上操作
+  */
+  join_right(tableB)
+```
+
+### join_full
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象. 后续在新的join上操作
+  */
+  join_full(tableB)
 ```

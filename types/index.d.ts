@@ -275,19 +275,28 @@ export class join {
   set_on(onSql:string):join;
 
   /**
-  * @desc: table1.
+  * @desc: 返回join对象. 后续在新的join上操作
+  */
+  join_inner(tableB:tablebase):join;
+  join_cross(tableB:tablebase):join;
+  join_left(tableB:tablebase):join;
+  join_right(tableB:tablebase):join;
+  join_full(tableB:tablebase):join;
+
+  /**
+  * @desc: 当前操作的 table1对象.
   */
   table1: string;
   /**
-  * @desc: table2.
+  * @desc: 当前操作的 table2对象.
   */
   table2: string;
   /**
-  * @desc: alias1.
+  * @desc: 当前操作的 alias1 (仅第一次join时可以设置).
   */
   alias1: string;
   /**
-  * @desc: alias2.
+  * @desc: 当前操作的 alias2
   */
   alias2: string;
 }
