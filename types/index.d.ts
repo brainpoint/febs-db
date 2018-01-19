@@ -250,6 +250,48 @@ export class database {
   ret_data_cvt(rows:any[], table:tablebase):any[];
 }
 
+export class join {
+  /**
+  * @desc: 返回sql select.
+  * @return: string
+  */
+  sql_select(where:string, opt?:select_opt):string;
+
+  /**
+  * @desc: 设置别名1.
+  * @return: 支持语法糖
+  */
+  set_alias1(aliasName:string):join;
+  /**
+  * @desc: 设置别名2.
+  * @return: 支持语法糖
+  */
+  set_alias2(aliasName:string):join;
+
+  /**
+  * @desc: 设置join条件.
+  * @return: 支持语法糖
+  */
+  set_on(onSql:string):join;
+
+  /**
+  * @desc: table1.
+  */
+  table1: string;
+  /**
+  * @desc: table2.
+  */
+  table2: string;
+  /**
+  * @desc: alias1.
+  */
+  alias1: string;
+  /**
+  * @desc: alias2.
+  */
+  alias2: string;
+}
+
 export class tablebase {
   /**
   * @desc 构造数据表.
@@ -373,6 +415,16 @@ export class tablebase {
   */
   sql_count(where:string, alias?:string):string;
 
+
+  /**
+  * @desc: 返回join对象.
+  */
+  join_inner(tableB:tablebase):join;
+  join_cross(tableB:tablebase):join;
+  join_left(tableB:tablebase):join;
+  join_right(tableB:tablebase):join;
+  join_full(tableB:tablebase):join;
+  
   /**
   * @desc: 真实表名称.
   */

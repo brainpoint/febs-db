@@ -30,6 +30,7 @@ febs db库用于连接数据库
 - [Class tablebase API](#class-tablebase-api)
 - [Class condition API](#class-condition-api)
 - [Class dataType API](#class-datatype-api)
+- [Class join](#class-join)
 
 # Install
 
@@ -818,6 +819,11 @@ get sqlLogCallback()
 - [condition](#condition-1)
 - [getLogicColName](#getLogicColName)
 - [db](#db)
+- [join_inner](#join_inner)
+- [join_cross](#join_cross)
+- [join_left](#join_left)
+- [join_right](#join_right)
+- [join_full](#join_full)
 
 ### constructor
 ```js
@@ -1053,6 +1059,52 @@ sql_count(where, alias=null)
   get db()
 ```
 
+### join_inner
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象.
+  */
+  join_inner(tableB)
+```
+
+### join_cross
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象.
+  */
+  join_cross(tableB)
+```
+
+### join_left
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象.
+  */
+  join_left(tableB)
+```
+
+### join_right
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象.
+  */
+  join_right(tableB)
+```
+
+### join_full
+
+```js
+  /**
+  * @desc: join tableB后, 返回join对象.
+  */
+  join_full(tableB)
+```
+
+
 # Class condition API
 
 - [equal](#equal)
@@ -1242,4 +1294,77 @@ sql_count(where, alias=null)
    * @param {*} sqlValue 数据库bit值.
    */
   getValueBit(sqlValue)
+```
+
+
+# Class join
+
+- [sql_select](#sql_select-1)
+- [set_alias1](#set_alias1)
+- [set_alias2](#set_alias2)
+- [set_on](#set_on)
+- [table1](#table1)
+- [table2](#table1)
+- [alias1](#alias1)
+- [alias2](#alias1)
+
+### sql_select
+
+```js
+  /**
+  * @desc: 返回sql select.
+  *         查询的字段必须明确指明.
+  * @return: string
+  */
+  sql_select(where, opt = null)
+```
+
+### set_alias1
+
+```js
+  /**
+  * @desc: 设置别名1.
+  * @return: 支持语法糖
+  */
+  set_alias1(aliasName)
+```
+
+### set_alias2
+
+```js
+  /**
+  * @desc: 设置别名2.
+  * @return: 支持语法糖
+  */
+  set_alias2(aliasName)
+```
+
+### set_on
+
+```js
+  /**
+  * @desc: 设置join条件.
+  * @return: 支持语法糖
+  */
+  set_on(onSql)
+```
+
+### table1
+
+```js
+  /**
+  * @desc: table1对象. table2对象.
+  */
+  get table1;
+  get table2;
+```
+
+### alias1
+
+```js
+  /**
+  * @desc: table1对象别名. table2对象别名.
+  */
+  get alias1;
+  get alias2;
 ```
