@@ -634,7 +634,14 @@ global.dbagent.transaction(
                    .join_inner(table3);
 
   // select ... from (table1 as A inner join table2 as B on A.id = B.id) inner join table3.
-  join.sql_select(...);
+  let joinSql = join.sql_select(...);
+
+  // query.
+  let r = await db.exec(joinSql);
+
+  // convert data to fix time or other data.
+  db.ret_data_cvt(r.rows, table1, table2, table3);
+
 
 ```
 
@@ -814,7 +821,7 @@ get sqlLogCallback()
 * @desc: 转换查询结果中的数据,按类型转换.
 * @return: 
 */
-  ret_data_cvt(rows, table)
+  ret_data_cvt(rows, ...table)
 ```
 
 

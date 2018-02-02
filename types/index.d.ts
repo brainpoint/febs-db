@@ -247,7 +247,7 @@ export class database {
   * @desc: 转换查询结果中的数据,按类型转换.
   * @return: 
   */
-  ret_data_cvt(rows:any[], table:tablebase):any[];
+  ret_data_cvt(rows:any[], ...table:tablebase[]):any[];
 }
 
 export class join {
