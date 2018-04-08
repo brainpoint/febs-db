@@ -179,8 +179,9 @@ export class database {
   /**
   * @desc: 注册表格到此数据库.
   * @param mapName: 映射数据中真实的表名.
+  * @return 将在db内部注册的tablebase对象返回.
   */
-  registerTable(table: tablebase, mapName?: string): void;
+  registerTable(table: tablebase, mapName?: string): tablebase;
   /**
   * @desc: 执行sql语句.
   * @return: Promise.

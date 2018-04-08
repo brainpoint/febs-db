@@ -57,4 +57,7 @@
 ==================
   - [enhancement] delete key 'RowNumber' in result.
   - [bugfix] connectPool problem.
-  
+
+1.3.10
+==================
+  - [enhancement] 增加registerTable返回值.

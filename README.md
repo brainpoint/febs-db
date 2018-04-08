@@ -133,7 +133,7 @@ class dbAgent extends database {
     super('mysql', {});
 
     // 注册数据表.
-    this.registerTable(new TableDemo(), 'mapName');
+    this.TableDemo = this.registerTable(new TableDemo(), 'mapName');
   }
 }
 
@@ -725,8 +725,9 @@ var opt = {
 /**
 * @desc: 注册表格到此数据库.
 * @param mapName: 映射数据中真实的表名.
+* @return 将db内部注册的tablebase对象返回.
 */
-registerTable(table, mapName=null)
+registerTable(table, mapName=null) : tablebase
 ```
 
 ## exec
