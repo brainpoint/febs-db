@@ -185,7 +185,7 @@ class TableDemo extends tablebase {
 | `Numeric` | dataType.Numeric(unsigned, precision, scale)   | |
 | `Decimal` | dataType.Decimal(unsigned, precision, scale)   | |
 | `Real` | dataType.Real(unsigned)   | |
-| `DateTime` | dataType.DateTime()   | 对应js的`Date`类型;<br> 在数据库中, <br>对应mysql的`datetime`类型,<br>对应sqlserver的`smalldatetime`类型.<br> (YYYY-MM-DD hh:mm:ss) |
+| `DateTime` | dataType.DateTime()   | 对应js的`Date`类型; 数据库中使用utc时间存储. 本地设置时使用本地时间, 系统会自动转换.<br> 在数据库中, <br>对应mysql的`datetime`类型,<br>对应sqlserver的`smalldatetime`类型.<br> (YYYY-MM-DD hh:mm:ss) |
 | `Binary` | dataType.Binary(length)   | 对应js的`Buffer`类型 |
 | `VarBinary` | dataType.VarBinary(length)   | 对应js的`Buffer`类型 |
 

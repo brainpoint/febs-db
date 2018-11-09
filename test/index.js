@@ -52,12 +52,12 @@ db.sqlLogCallback = function(err, sql) {
 var test    = require('./_test');
 setInterval(()=>{
   test.test(db);
-  test.test(db);
-  test.test(db);
-  test.test(db);
-  test.test(db);
-  test.test(db);
-  test.test(db);
-  test.test(db);
-  test.test(db);
+  // test.test(db);
+  // test.test(db);
+  // test.test(db);
+  // test.test(db);
+  // test.test(db);
+  // test.test(db);
+  // test.test(db);
+  // test.test(db);
 }, 500);

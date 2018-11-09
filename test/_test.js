@@ -9,15 +9,16 @@ module.exports =  {
   * @return: 
   */
   test(db) {
-    let table = db.test;
+    let table = db.table1;
 
-    // table.add({dt:new Date()}).then(res=>{
+    table.add({col10:new Date(2018,1,1,1), col8:'23243242'}).then(res=>{
     table.select().then(res=>{
       // console.log(res[0].dt);
+      console.log(res);
     }).catch(err=>{ 
       console.log(err); 
     });
-  // });
+  });
     
     // table.count(null)
     // .then(ret=>{

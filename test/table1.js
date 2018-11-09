@@ -6,9 +6,9 @@ var dataType  = require('../lib').dataType;
 module.exports = class extends tablebase {
 
 	constructor() {
-    super('table1', 'id',
+    super('table1', 'id1',
     {
-      id:     {type: dataType.BigInt(true), key: true}, // the auto-incrementing primary key
+      id1:     {type: dataType.BigInt(true), key: true, map:'id'}, // the auto-incrementing primary key
       col2:   {type: dataType.VarChar(20),  map: 'a'},
       colx:   {type: dataType.Bit(),        map: 'b'},
       col3:   {type: dataType.Text(),       map: 'c'},
