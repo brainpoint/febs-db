@@ -50,7 +50,7 @@ db.sqlLogCallback = function(err, sql) {
 
 // 每10s执行一次, 测试重新连接.
 var test    = require('./_test');
-setInterval(()=>{
+// setInterval(()=>{
   test.test(db);
   // test.test(db);
   // test.test(db);
@@ -60,4 +60,4 @@ setInterval(()=>{
   // test.test(db);
   // test.test(db);
   // test.test(db);
-}, 500);
+// }, 500);

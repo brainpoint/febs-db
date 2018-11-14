@@ -11,12 +11,13 @@ module.exports =  {
   test(db) {
     let table = db.table1;
 
-    table.add({col10:new Date(2018,1,1,1), col8:'23243242'}).then(res=>{
+
+    table.add({col10:new Date(), col8:'23243242'}).then(res=>{
     table.select().then(res=>{
-      // console.log(res[0].dt);
-      console.log(res);
+      console.log(res[0].col10);
+      console.log(res[0].col10.getMilliseconds());
     }).catch(err=>{ 
-      console.log(err); 
+      console.log(err);
     });
   });
     

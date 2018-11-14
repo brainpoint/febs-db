@@ -73,8 +73,10 @@ export namespace dataType {
   /**
   * @desc: use Date.
   *     数据库中使用utc时间存储. 本地设置时使用本地时间, 系统会自动转换.
-  *   mssql:   smalldatetime  (YYYY-MM-DD hh:mm:ss)
-  *   mysql:   datetime       (YYYY-MM-DD hh:mm:ss)
+  *   mssql:   存储的格式为 (YYYY-MM-DD hh:mm:ss.SSS)
+  *               可以使用 smalldatetime, datetime, datetime2
+  *   mysql:   datetime   (YYYY-MM-DD hh:mm:ss.SSS)
+  *               使用length来指明ms数据存储.
   */
   function DateTime(): any;
 

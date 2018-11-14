@@ -3,6 +3,7 @@ var co        = require('co');
 var tap       = require('tap');
 
 var test_add = {
+    id1:    1,
     col2:   '123456789',
     col3:   '123\'456789',
     col4:   '1234\\56789',

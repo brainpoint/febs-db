@@ -20,7 +20,7 @@ var co        = require('co');
 module.exports = class Test extends database {
   constructor() {
     // create.
-    super('mysql', cfg);
+    super(cfg.type, cfg);
 
     // table.
     this.registerTable(new (require('./table1'))(), 'tableA');
