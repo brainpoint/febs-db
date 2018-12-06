@@ -584,7 +584,7 @@ isolationLevel.Serializable;
 ```js
 //
 // 开启sql日志. global.dbagent 是预先存储的全局数据库对象
-global.dbagent.sqlLogCallback = function(err, sql) {
+global.dbagent.sqlLogCallback = function(err, sql, isTransactionBeginOrEnd) {
   console.log(
 `
 ${febs.utils.getTimeString(Date.now(), 'yyyy-MM-dd hh:mm:ss')}
@@ -791,7 +791,8 @@ get dbtype()
 ```js
 /**
 * @desc: 设置执行sql的log回调. 每次执行数据库查询都将调用此方法.
-* @param cb: function(err, sql) {}
+* @param cb: function(err, sql, isTransactionBeginOrEnd) {}
+*             - isTransactionBeginOrEnd: 是否是 事务 begin/commit/rollback.
 */
 set sqlLogCallback(cb)
 get sqlLogCallback()

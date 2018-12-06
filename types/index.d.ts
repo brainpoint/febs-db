@@ -55,7 +55,7 @@ export namespace dataType {
   function Bit(): any;
 
   /**
-  * @desc:  use number or BigNumber (BigNumber.js)
+  * @desc:  use number or BigNumber (febs.BigNumber)
   */
   function BigInt(unsigned?: boolean): any;
 
@@ -231,9 +231,10 @@ export class database {
 
   /**
   * @desc: 设置执行sql的log回调. 每次执行数据库查询都将调用此方法.
-  * @param cb: function(err, sql) {} 
+  * @param cb: function(err, sql, isTransactionBeginOrEnd) {} 
+  *              - isTransactionBeginOrEnd: 是否是 事务 begin/commit/rollback.
   */
-  sqlLogCallback: (err: any, sql: string) => void;
+  sqlLogCallback: (err: any, sql: string, isTransactionBeginOrEnd?:boolean) => void;
 
   /**
   * @desc: 对likeSql进行转义操作.

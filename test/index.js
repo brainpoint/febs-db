@@ -14,7 +14,7 @@ __debug = true;
 var db = new database();
 
 // set sql log callback.
-db.sqlLogCallback = function(err, sql) {
+db.sqlLogCallback = function(err, sql, isTransactionBeginOrEnd) {
 //   console.log(`
 // ${febs.utils.getTimeString(Date.now(), '[yyyy-MM-dd hh:mm:ss]')}
 // ${sql.green}
