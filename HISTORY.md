@@ -65,3 +65,7 @@
 1.4.0
 ==================
   - [feature] 数值型字段允许使用string
+
+1.5.0
+==================
+  - [feature] add NULL value type

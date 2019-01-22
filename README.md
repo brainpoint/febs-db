@@ -1271,11 +1271,22 @@ sql_count(where, alias=null)
 
 # Class dataType API
 
+- [NULL](#NULL)
 - [getType](#gettype)
 - [isIntegerType](#isintegertype)
 - [isStringType](#isstringtype)
 - [getValueBigInt](#getValueBigInt)
 - [getValueBit](#getValueBit)
+
+### NULL
+
+```js
+  /**
+  * @desc: 代表NULL.
+  */
+  NULL   ()
+```
+
 
 ### getType
 

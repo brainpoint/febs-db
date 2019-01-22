@@ -13,6 +13,11 @@ export interface ExecRet {
 export namespace dataType {
 
   /**
+  * @desc: 代表NULL.
+  */
+  function NULL(): any;
+
+  /**
   * @desc: 获得参数的类型.(不考虑长度等其他选项)
   */
   function getType(value: any): any;
