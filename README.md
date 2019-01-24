@@ -886,7 +886,7 @@ constructor(tablename, idKeyName, model)
   * @param item: 要添加的数据对象.
   * @return: Promise.
   * @resolve:
-  *   ret - boolean.
+  *   ret - boolean. 表明是否有满足条件的插入更新成功.
   */
   add( item )
 ```
@@ -898,7 +898,7 @@ constructor(tablename, idKeyName, model)
   * @desc: remove; 删除条件必须存在.
   * @return: Promise.
   * @resolve:
-  *   ret - boolean. 是否成功删除.
+  *   ret - boolean. 表明是否有满足条件的数据删除成功..
   */
   remove( where )
 ```
@@ -914,7 +914,7 @@ constructor(tablename, idKeyName, model)
   * @param where: 查询条件, 如果item中不存在主键, 则查询条件必须存在.
   * @return: Promise.
   * @resolve:
-  *   ret - boolean.
+  *   ret - boolean. 表明是否有满足条件的数据更新成功.
   */
   update( item, where = null )
 ```
