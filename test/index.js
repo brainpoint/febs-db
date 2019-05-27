@@ -10,6 +10,7 @@ var database = require('./database');
 var table1   = require('./table1');
 
 
+
 __debug = true;
 var db = new database();
 
@@ -51,7 +52,23 @@ db.sqlLogCallback = function(err, sql, isTransactionBeginOrEnd) {
 // 每10s执行一次, 测试重新连接.
 var test    = require('./_test');
 // setInterval(()=>{
-  test.test(db);
+
+  setTimeout(()=>{
+    test.test(db)
+    .then(res=>{
+    })
+    .then(res=>{
+    })
+  }, 4000)
+
+  setTimeout(()=>{
+    test.test(db)
+    .then(res=>{
+    })
+    .then(res=>{
+    })
+  }, 8000)
+
   // test.test(db);
   // test.test(db);
   // test.test(db);

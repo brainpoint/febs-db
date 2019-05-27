@@ -26,6 +26,7 @@ module.exports = class Test extends database {
     this.registerTable(new (require('./table1'))(), 'tableA');
     // this.registerTable(new (require('./table2'))(), 'tableB');
     // this.registerTable(new (require('./table3'))());
+    // this.registerTable(new (require('./table4'))());
   }
 
 };
