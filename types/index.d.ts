@@ -183,7 +183,7 @@ export interface database_opt {
 }
 
 export class database {
-  constructor(dbtype: 'mysql' | 'mssql', opt: database_opt);
+  constructor(dbtype: 'mysql' | 'mssql', opt: database_opt, customGenerateKeyCB?:()=>any);
   /**
   * @desc: 注册表格到此数据库.
   * @param mapName: 映射数据中真实的表名.

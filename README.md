@@ -13,6 +13,7 @@ febs db库用于连接数据库
   - [combined primary key](#combined-primary-key)
   - [column data type](#column-data-type)
   - [name map](#name-map)
+  - [custom auto increase primary key](#custom-auto-increase-primary-key)
 - [2.Connect db](#connect-db)
 - [3.Query db](#query-db)
   - [add](#add)
@@ -217,6 +218,30 @@ class TableDemo extends tablebase {
 
 database.registerTable(new TableDemo(), 'realName');
 
+```
+
+## custom auto increase primary key
+
+默认情况下, 指定了主键 `key=true`, 则会使用数据库默认的自增主键的方式设置主键, 并在成功 `add` 之后返回插入的键.
+
+在分部式情况下, 可以使用自定义主键的生成行为:
+
+
+
+```js
+// custom generate key.
+function customGenerateKeyCB() {
+  // e.g. use objectId.
+  return objectid().toHexString();
+}
+
+
+// create db.
+var db = new database(
+               'mysql', // 数据库类型, 目前支持 'mysql', 'mssql'
+                opt,
+                customGenerateKeyCB,  // 指定自定义主键生成方法.
+              );
 ```
 
 # Connect db
@@ -665,9 +690,10 @@ global.dbagent.transaction(
 /*
 * 构造
 */
-constructor(dbtype, opt)
+constructor(dbtype, opt, customGenerateKeyCB = null)
 ```
 * dbtype: 数据库类型, 目前仅支持 `'mysql'`, `'mssql'`
+* customGenerateKeyCB: 自定义的主键生成方法; function():any;
 * opt: 连接参数
 ```js
 // 使用如下的结构来构建数据库, 数据库将使用此信息进行连接.
