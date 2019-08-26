@@ -658,6 +658,10 @@ global.dbagent.transaction(
                    .on('A.id = B.id')
                    .join_inner(table3);
 
+  /*
+  * version 1.7.0 之前.
+  */
+
   // select ... from (table1 as A inner join table2 as B on A.id = B.id) inner join table3.
   let joinSql = join.sql_select(...);
 
@@ -667,6 +671,10 @@ global.dbagent.transaction(
   // convert data to fix time or other data.
   db.ret_data_cvt(r.rows, table1, table2, table3);
 
+  /*
+  * version 1.7.0 及之后
+  */ 
+  let r = await join.select(...);
 
 ```
 
@@ -870,9 +878,9 @@ get sqlLogCallback()
 - [sql_select](#sql_select)
 - [sql_count](#sql_count)
 - [tablename](#tablename)
+- [db](#db)
 - [condition](#condition-1)
 - [getLogicColName](#getLogicColName)
-- [db](#db)
 - [join_inner](#join_inner)
 - [join_cross](#join_cross)
 - [join_left](#join_left)
@@ -1377,6 +1385,8 @@ sql_count(where, alias=null)
 - [join_left](#join_left-1)
 - [join_right](#join_right-1)
 - [join_full](#join_full-1)
+- [select](#select-2)
+- [count](#count-2)
 
 ### sql_select
 
@@ -1484,4 +1494,39 @@ sql_count(where, alias=null)
   * @desc: join tableB后, 返回join对象. 后续在新的join上操作
   */
   join_full(tableB)
+```
+
+### select
+
+```js
+  /**
+  * @desc: select.
+  *         sql的连接顺序为: SELECT cols FROM table where groupSql orderby pageInfo.
+  *
+  * @param where:
+  *           查询条件,不会对此字符串验证. 使用 condition 对象进行构建.
+  * @param opt: 查询选项. 可以包含以下键值.
+  *         - cols:  需要查询出的字段名称数组; 例如: [col1, col2, ...]; 不指定则为查询全部.
+  *         - groupSql:   group by子句, 不会对内容进行验证; 应包含group by关键字.
+  *         - orderby:    orderby by子句, 例如: {key:true/false} true-means asc, false-means desc..
+  *         - offset:     分页查询起始位置.
+  *         - limit:      分页查询查询行数.
+  * @return: Promise.
+  * @resolve:
+  *   ret - mod array.
+  */
+  select( where, opt = null )
+```
+
+### count
+
+```js
+  /**
+  * @desc: count
+  * @param: where
+  * @return: Promise.
+  * @resolve:
+  *   ret - number.
+  */
+  count(where = null)
 ```

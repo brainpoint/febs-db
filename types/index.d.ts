@@ -294,6 +294,35 @@ export class join {
   join_full(tableB:tablebase):join;
 
   /**
+  * @desc: query
+  *         sql的连接顺序为: SELECT query_cols FROM  where groupSql orderby pageInfo.
+  * @description:
+  *         与tablebase.select() 不同的是: cols中的字段无需使用 "别名.colName";
+  *         colName优先匹配table1中字段.
+  * @param where:
+  *           查询条件,不会对此字符串验证. 使用 condition 对象进行构建.
+  * @param opt: 查询选项. 可以包含以下键值.
+  *         - cols:  需要查询出的字段名称数组; 例如: [col1, col2, ...]; 不指定则为查询全部.
+  *         - groupSql:   group by子句, 不会对内容进行验证; 应包含group by关键字.
+  *         - orderby:    orderby by子句, 例如: {key:true/false} true-means asc, false-means desc..
+  *         - offset:     分页查询起始位置.
+  *         - limit:      分页查询查询行数.
+  * @return: Promise.
+  * @resolve:
+  *   ret - mod array.
+  */
+  select(where: string, opt?: select_opt): Promise<Array<any>>;
+
+  /**
+  * @desc: count
+  * @param: where
+  * @return: Promise.
+  * @resolve:
+  *   ret - number.
+  */
+  count(where?: string): Promise<number>;
+
+  /**
   * @desc: 当前操作的 table1对象.
   */
   table1: string;
