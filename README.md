@@ -625,6 +625,9 @@ global.dbagent.transaction(
   async function(db){
     // !!![在此事务中sql相关方法只能使用db, 使用其他数据库对象将引起错误.]
 
+    db.transactionCustomData = 'custom data'; // 存储此对象, 在后续的嵌套事务中都可以使用.
+
+
     // db是一个global.dbagent的副本. 克隆了全部的global.dbagent方法, 可以直接调用.
 
     // 执行sql方法 or 嵌套执行其他事务.
@@ -680,6 +683,7 @@ global.dbagent.transaction(
 
 # Class database API
 
+- [transactionCustomData](#transactionCustomData)
 - [constructor](#constructor)
 - [registerTable](#registertable)
 - [exec](#exec)
@@ -691,6 +695,14 @@ global.dbagent.transaction(
 - [type_cast](#typecast)
 - [ret_data_cvt](#ret_data_cvt)
 
+## transactionCustomData
+
+```js
+  /**
+  * @desc: 可在事务处理中使用的自定义变量, 同一个事务, 此变量一致.
+  */
+  transactionCustomData:any;
+```
 
 ## constructor
 

@@ -183,6 +183,12 @@ export interface database_opt {
 }
 
 export class database {
+
+  /**
+  * @desc: 可在事务处理中使用的自定义变量, 同一个事务, 此变量一致.
+  */
+  transactionCustomData:any;
+  
   constructor(dbtype: 'mysql' | 'mssql', opt: database_opt, customGenerateKeyCB?:()=>any);
   /**
   * @desc: 注册表格到此数据库.
