@@ -837,6 +837,7 @@ execProcedure(name, procedureParams)
 * @desc: 创建一个事务.
 * @param isolationLevel: 事务级别. 使用了数据库不支持的隔离级别将reject (例如oracle中不支持READ UNCOMMITTED)
 * @param taskCB: async function(db):boolean {}; 返回false则rollback, 返回true则commit.
+* @param preCB: task执行前的第一个的回调.
 * @param commitCB: 提交前的回调. 返回false则rollback, 返回true则commit.
 * @param rollbackCB: rollback前的回调.
 * @return: Promise.
