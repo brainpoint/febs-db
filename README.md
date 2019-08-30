@@ -647,6 +647,26 @@ global.dbagent.transaction(
   .catch(err=>{  });
 ```
 
+## transaction hook
+
+事务的commit与rollback都会进行回调, 开发者可以在此处添加如redis事务等特殊的处理方法
+
+```js
+//
+// 开启一个事务.
+dbagent.transaction(
+  isolationLevel.Repeatable_read, // 使用可重读隔离级别.
+  async function(db){
+  },
+  // 事务commit前的回调.
+  async function(db){
+  },
+  // 事务rollback前的回调.
+  async function(db){
+  }
+);
+```
+
 # Join
 
 ```js
@@ -817,11 +837,13 @@ execProcedure(name, procedureParams)
 * @desc: 创建一个事务.
 * @param isolationLevel: 事务级别. 使用了数据库不支持的隔离级别将reject (例如oracle中不支持READ UNCOMMITTED)
 * @param taskCB: async function(db):boolean {}; 返回false则rollback, 返回true则commit.
+* @param commitCB: 提交前的回调. 返回false则rollback, 返回true则commit.
+* @param rollbackCB: rollback前的回调.
 * @return: Promise.
 * @resolve:
 *     ret - 是否成功提交.
 */
-transaction(isolationLevel, taskCB)
+transaction(isolationLevel, taskCB, commitCB, rollbackCB)
 ```
 
 ## dbType
