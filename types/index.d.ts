@@ -245,7 +245,7 @@ export class database {
   * @desc: 数据库类型.
   * @return: 'mysql' / 'mssql'.
   */
-  dbtype: 'mysql' | 'mssql';
+  get dbtype(): 'mysql' | 'mssql';
 
   /**
   * @desc: 设置执行sql的log回调. 每次执行数据库查询都将调用此方法.
@@ -338,19 +338,19 @@ export class join {
   /**
   * @desc: 当前操作的 table1对象.
   */
-  table1: string;
+  get table1(): string;
   /**
   * @desc: 当前操作的 table2对象.
   */
-  table2: string;
+  get table2(): string;
   /**
   * @desc: 当前操作的 alias1 (仅第一次join时可以设置).
   */
-  alias1: string;
+  get alias1(): string;
   /**
   * @desc: 当前操作的 alias2
   */
-  alias2: string;
+  get alias2(): string;
 }
 
 export class tablebase {
@@ -489,17 +489,17 @@ export class tablebase {
   /**
   * @desc: 真实表名称.
   */
-  tablename: string;
+  get tablename(): string;
 
   /**
   * @desc: 本表模型
   */
-  model : any;
+  get model(): any;
 
   /**
   * @desc: 条件构造对象，使用此对象可以在类型安全的情况下构造查询条件.
   */
-  condition: condition;
+  get condition(): condition;
 
   /**
   * @desc: 使用字段的映射名称获得字段的逻辑名称.
@@ -516,17 +516,17 @@ export class tablebase {
   * @desc: 所属数据库.
   * @return: 
   */
-  db: database;
+  get db(): database;
 
   /**
   * @desc: 主键
   */
-  idKeyName : string|string[];
+  get idKeyName() : string|string[];
 
   /**
   * @desc: 自增键.
   */
-  idKeyNameAutoInc: string;
+  get idKeyNameAutoInc(): string;
 }
 
 export interface select_opt {
