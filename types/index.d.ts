@@ -189,7 +189,10 @@ export class database {
   */
   transactionCustomData:any;
   
-  constructor(dbtype: 'mysql' | 'mssql', opt: database_opt, customGenerateKeyCB?:()=>any);
+  constructor(dbtype: 'mysql' | 'mssql', opt: database_opt, customGenerateKeyCB?: () => any);
+  
+  recreate(dbtype: 'mysql' | 'mssql', opt: database_opt, customGenerateKeyCB?: () => any): void;
+  
   /**
   * @desc: 注册表格到此数据库.
   * @param mapName: 映射数据中真实的表名.
