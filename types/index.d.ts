@@ -278,6 +278,12 @@ export class database {
   protected _cloneWithConn(conn: any): any;
 }
 
+
+/**
+ * 如果查询条件是object，就将使用AND的方式组合成一个完整的查询语句.
+ */
+type WhereObject = object;
+
 export class join {
   /**
   * @desc: 返回sql select.
@@ -383,7 +389,7 @@ export class tablebase {
   * @resolve:
   *   ret - boolean. 是否成功删除.
   */
-  remove(where: string): Promise<boolean>;
+  remove(where: string|WhereObject): Promise<boolean>;
 
   /**
   * @desc: update data.
@@ -395,7 +401,7 @@ export class tablebase {
   * @resolve:
   *   ret - boolean.
   */
-  update(item: any, where?: string): Promise<boolean>;
+  update(item: any, where?: string|WhereObject): Promise<boolean>;
 
   /**
   * @desc: select by id and lock row for update (use in transaction).
@@ -425,7 +431,7 @@ export class tablebase {
   * @resolve:
   *   ret - mod array.
   */
-  select(where: string, opt?: select_opt): Promise<Array<any>>;
+  select(where: string|WhereObject, opt?: select_opt): Promise<Array<any>>;
 
   /**
   * @desc: count
@@ -434,7 +440,7 @@ export class tablebase {
   * @resolve:
   *   ret - number.
   */
-  count(where?: string): Promise<number>;
+  count(where?: string|WhereObject): Promise<number>;
 
   /**
   * @desc: exist
