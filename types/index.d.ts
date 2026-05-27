@@ -555,6 +555,14 @@ export interface select_opt {
 
 export class condition {
   /**
+   * @desc 将所有的conditions用 OR 连接起来.
+   */
+  or(...conditions: string[]): string;
+  /**
+   * @desc 将所有的conditions用 and 连接起来.
+   */
+  and(...conditions: string[]): string;
+  /**
   * @desc: 构造一个 key=value的sql条件语句.
   * @return: sql;
   */
